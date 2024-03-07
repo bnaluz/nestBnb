@@ -304,7 +304,7 @@ Returns all the spots owned (created) by the current user.
 - Request
 
   - Method: GET
-  - URL: /api/users/:userId/spots
+  - URL: /api/users/:userId/spots <!-- You could also do something like "/spots/current, after we finish the Authorize Me project, you will have access to the logged in users info in all of your routes. This will keep all your endpoints related to spots in the spots router."-->
   - Body: none
 
 - Successful Response
@@ -669,7 +669,7 @@ Returns all the reviews written by the current user.
 - Request
 
   - Method: GET
-  - URL: /api/users/:userId/reviews
+  - URL: /api/users/:userId/reviews <!-- Mentioned above we can do something like "/reviews/current".-->
   - Body: none
 
 - Successful Response
@@ -1038,7 +1038,7 @@ Return all the bookings that the current user has made.
 - Request
 
   - Method: GET
-  - URL: /api/users/:userId/bookings
+  - URL: /api/users/:userId/bookings <!-- could do "/bookings/current". Explained above.-->
   - Body: none
 
 - Successful Response
@@ -1085,7 +1085,7 @@ Return all the bookings for a spot specified by id.
 - Request
 
   - Method: GET
-  - URL: /api/bookings/:spotId
+  - URL: /api/bookings/:spotId <!-- We would want to match the id of the router we are in, so mixing a spotId in our booking route could be confusing. Since this route is looking for all the booking from a specific spot we could do something like "/spots/:spotId/spot". -->
   - Body: none
 
 - Successful Response: If you ARE NOT the owner of the spot.
@@ -1157,7 +1157,7 @@ Create and return a new booking from a spot specified by id.
 - Request
 
   - Method: POST
-  - URL: /api/bookings/:spotId
+  - URL: /api/bookings/:spotId <!-- Since we are creating a booking that a spot would own, it would make more sense to go through the spots router. "/spots/:spotId/bookings" would be something I would do to create a booking for a spot.-->
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1398,7 +1398,7 @@ Delete an existing image for a Spot.
 - Request
 
   - Method: DELETE
-  - URL: /api/spots/:spotId/:spotImageId
+  - URL: /api/spots/:spotId/:spotImageId <!-- We would want to specify what kind of Id we are expecting for the second one. If we are going with this it should be something like "/api/spots/:spotId/images/:imageId". Or depending how we design the image tables, we could have a separate router for images. -->
   - Body: none
 
 - Successful Response
@@ -1436,7 +1436,7 @@ Delete an existing image for a Review.
 - Request
 
   - Method: DELETE
-  - URL: /api/reviews/:reviewId/:reviewImageId
+  - URL: /api/reviews/:reviewId/:reviewImageId <!-- Same thing as the route above, we should specify the Id in the url "/api/reviews/:reviewId/images/:reviewImageId" -->
   - Body: none
 
 - Successful Response
@@ -1474,7 +1474,7 @@ Return spots filtered by query parameters.
   <!-- !Not sure  -->
 
   - Method: GET
-  - URL: /api/spots?=page=${page}&size=${size}&minLat?=${minLat}&maxLat?=${maxLat}&minLng?=${minLng}&maxLng?=${maxLng}&minPrice?=${minPrice}&maxPrice?=${maxPrice}
+  - URL: /api/spots?=page=${page}&size=${size}&minLat?=${minLat}&maxLat?=${maxLat}&minLng?=${minLng}&maxLng?=${maxLng}&minPrice?=${minPrice}&maxPrice?=${maxPrice} <!-- This route is kind of a general catch all route, it should just be "/spots". You already defined your query params under it. -->
 
   - Query Parameters
     - page: integer, minimum: 1, maximum: 10, default: 1
