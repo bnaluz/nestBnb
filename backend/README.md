@@ -1085,7 +1085,7 @@ Return all the bookings for a spot specified by id.
 - Request
 
   - Method: GET
-  - URL: /api/bookings/:spotId <!-- We would want to match the id of the router we are in, so mixing a spotId in our booking route could be confusing. Since this route is looking for all the booking from a specific spot we could do something like "/spots/:spotId/spot". -->
+  - URL: /api/bookings/:spotId <!-- We would want to match the id of the router we are in, so mixing a spotId in our booking route could be confusing. Since this route is looking for all the booking from a specific spot we could do something like "/spots/:spotId/bookings". -->
   - Body: none
 
 - Successful Response: If you ARE NOT the owner of the spot.
