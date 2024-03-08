@@ -1,8 +1,9 @@
-# `<name of application here>`
+# `aaAirbnb`
 
 ## Database Schema Design
 
-`<insert database schema design here>`
+Route to schema
+'/backend/public/schema'
 
 ## API Documentation
 
