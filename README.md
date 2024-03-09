@@ -2,8 +2,7 @@
 
 ## Database Schema Design
 
-Route to schema
-'/backend/public/schema'
+[db-schema]: '/backend/images/databaseSchema.png'
 
 ## API Documentation
 
