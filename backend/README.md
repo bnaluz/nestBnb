@@ -1,4 +1,4 @@
-# `aaAirbnb`
+# `nestBnb`
 
 ## Database Schema Design
 
