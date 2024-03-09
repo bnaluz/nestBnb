@@ -2,7 +2,8 @@
 
 ## Database Schema Design
 
-[db-schema]: '/backend/images/databaseSchema.png'
+![db-schema]
+[db-schema]: ./images/databaseSchema.png
 
 ## API Documentation
 
