@@ -3,6 +3,7 @@
 ## Database Schema Design
 
 ![db-schema]
+
 [db-schema]: ./images/databaseSchema.png
 
 ## API Documentation
@@ -305,7 +306,7 @@ Returns all the spots owned (created) by the current user.
 - Request
 
   - Method: GET
-  - URL: /api/users/:userId/spots <!-- You could also do something like "/spots/current, after we finish the Authorize Me project, you will have access to the logged in users info in all of your routes. This will keep all your endpoints related to spots in the spots router."-->
+  - URL: /api/spots/current <!-- You could also do something like "/spots/current, after we finish the Authorize Me project, you will have access to the logged in users info in all of your routes. This will keep all your endpoints related to spots in the spots router."-->
   - Body: none
 
 - Successful Response
@@ -670,7 +671,7 @@ Returns all the reviews written by the current user.
 - Request
 
   - Method: GET
-  - URL: /api/users/:userId/reviews <!-- Mentioned above we can do something like "/reviews/current".-->
+  - URL: /api/reviews/current <!-- Mentioned above we can do something like "/reviews/current".-->
   - Body: none
 
 - Successful Response
@@ -1039,7 +1040,7 @@ Return all the bookings that the current user has made.
 - Request
 
   - Method: GET
-  - URL: /api/users/:userId/bookings <!-- could do "/bookings/current". Explained above.-->
+  - URL: /api/bookings/current <!-- could do "/bookings/current". Explained above.-->
   - Body: none
 
 - Successful Response
