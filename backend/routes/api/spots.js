@@ -25,6 +25,7 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 //* GET SPECIFIC SPOT
+//TODO: include associations (SpotImages) + reviews and avgStarRating
 router.get('/:spotId', async (req, res) => {
   const spotId = req.params.spotId;
 
@@ -32,9 +33,42 @@ router.get('/:spotId', async (req, res) => {
   const spot = await Spot.findByPk(spotId);
 
   if (spot !== null) {
-    return res.json(spot);
+    return res.status(200).json(spot);
   } else {
-    return res.json({ message: "Spot couldn't be found" });
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
+});
+
+//* CREATE A SPOT
+router.post('/', requireAuth, async (req, res) => {
+  try {
+    const {
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    } = req.body;
+
+    const newSpot = await Spot.create({
+      address: address,
+      city: city,
+      state: state,
+      country: country,
+      lat: lat,
+      lng: lng,
+      name: name,
+      description: description,
+      price: price,
+    });
+
+    return res.status(201).json(newSpot);
+  } catch (e) {
+    return res.status(400).json({ message: `${e}` });
   }
 });
 
