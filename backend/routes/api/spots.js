@@ -7,7 +7,7 @@ const { requireAuth } = require('../../utils/auth');
 router.get('/', async (req, res) => {
   const allSpots = await Spot.findAll({});
 
-  return res.json(allSpots);
+  return res.status(200).json(allSpots);
 });
 
 //*GET ALL USER SPOTS
@@ -21,7 +21,7 @@ router.get('/current', requireAuth, async (req, res) => {
     },
   });
 
-  return res.json(userSpots);
+  return res.status(200).json(userSpots);
 });
 
 //* GET SPECIFIC SPOT
@@ -42,6 +42,7 @@ router.get('/:spotId', async (req, res) => {
 //* CREATE A SPOT
 router.post('/', requireAuth, async (req, res) => {
   try {
+    const owner_id = req.user.id;
     const {
       address,
       city,
@@ -64,12 +65,77 @@ router.post('/', requireAuth, async (req, res) => {
       name: name,
       description: description,
       price: price,
+      owner_id: owner_id,
     });
 
     return res.status(201).json(newSpot);
   } catch (e) {
     return res.status(400).json({ message: `${e}` });
   }
+});
+
+//! ADD IMAGE TO SPOT BASED ON ID
+//TODO: will come back to this ^, need to create spotImages table and add associations
+
+//*EDIT A SPOT
+router.put('/:spotId', requireAuth, async (req, res) => {
+  try {
+    const spotId = req.params.spotId;
+    const spot = await Spot.findByPk(spotId);
+
+    const owner_id = req.user.id;
+
+    if (spot === null) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+
+    const {
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    } = req.body;
+
+    const updatedSpot = await spot.update({
+      address: address,
+      city: city,
+      state: state,
+      country: country,
+      lat: lat,
+      lng: lng,
+      name: name,
+      description: description,
+      price: price,
+      owner_id: owner_id,
+    });
+
+    return res.status(200).json(updatedSpot);
+  } catch (e) {
+    return res.status(400).json({ message: e });
+  }
+});
+
+//* DELETE SPOT
+router.delete('/:spotId', requireAuth, async (req, res) => {
+  let owner_id = req.user.id;
+  let spotId = req.params.spotId;
+
+  let spot = await Spot.findByPk(spotId);
+  if (spot === null) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
+
+  if (spot.owner_id !== owner_id) {
+    throw new Error('only owners can delete spot');
+  }
+
+  let deletedSpot = await spot.destroy();
+  return res.status(200).json({ message: 'Successfully deleted' });
 });
 
 module.exports = router;
