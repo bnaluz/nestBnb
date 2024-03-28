@@ -40,7 +40,7 @@ router.get('/:spotId', async (req, res) => {
 });
 
 //* CREATE A SPOT
-router.post('/', requireAuth, async (req, res) => {
+router.post('/', requireAuth, async (req, res, next) => {
   try {
     const owner_id = req.user.id;
     const {
@@ -70,7 +70,8 @@ router.post('/', requireAuth, async (req, res) => {
 
     return res.status(201).json(newSpot);
   } catch (e) {
-    return res.status(400).json({ message: `${e}` });
+    e.status = 400;
+    return next(e);
   }
 });
 
@@ -116,7 +117,8 @@ router.put('/:spotId', requireAuth, async (req, res) => {
 
     return res.status(200).json(updatedSpot);
   } catch (e) {
-    return res.status(400).json({ message: e });
+    e.status = 400;
+    return next(e);
   }
 });
 
