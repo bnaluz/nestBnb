@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Spot } = require('../../db/models');
+const { SpotImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 
 //* GET ALL SPOTS
@@ -75,8 +76,26 @@ router.post('/', requireAuth, async (req, res, next) => {
   }
 });
 
-//! ADD IMAGE TO SPOT BASED ON ID
-//TODO: will come back to this ^, need to create spotImages table and add associations
+router.post('/:spotsId/images', async (req, res) => {
+  const spotId = req.params.spotsId;
+  const spot = await Spot.findByPk(spotId);
+
+  if (spot === null) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  } else {
+    const { url, preview } = req.body;
+
+    const newImage = await SpotImage.create({
+      spot_Id: spotId,
+      url: url,
+      preview: preview || false,
+    });
+
+    return res
+      .status(200)
+      .json({ id: newImage.id, url: newImage.url, preview: newImage.preview });
+  }
+});
 
 //*EDIT A SPOT
 router.put('/:spotId', requireAuth, async (req, res) => {
