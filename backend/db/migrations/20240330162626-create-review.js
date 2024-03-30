@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'production') {
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      'SpotImages',
+      'Reviews',
       {
         id: {
           allowNull: false,
@@ -17,32 +17,32 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.INTEGER,
         },
-        url: {
-          type: Sequelize.STRING,
-        },
-        preview: {
-          type: Sequelize.BOOLEAN,
-          defaultValue: false,
+        user_Id: {
+          type: Sequelize.INTEGER,
         },
         spot_Id: {
+          type: Sequelize.INTEGER,
+        },
+        review: {
+          type: Sequelize.STRING,
+        },
+        stars: {
           type: Sequelize.INTEGER,
         },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
-          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         },
         updatedAt: {
           allowNull: false,
           type: Sequelize.DATE,
-          defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         },
       },
       options
     );
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = 'SpotImages';
+    options.tableName = 'Reviews';
     return queryInterface.dropTable(options);
   },
 };
