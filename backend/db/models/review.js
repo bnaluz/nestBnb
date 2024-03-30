@@ -15,6 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       user_Id: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'User',
+        },
         allowNull: false,
         validate: {
           notNull: true,
@@ -22,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       spot_Id: {
         type: DataTypes.INTEGER,
+        references: {
+          model: 'Spot',
+        },
         allowNull: false,
         validate: {
           notNull: true,
