@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Spot } = require('../../db/models');
+const { Spot, Review } = require('../../db/models');
 const { SpotImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 
@@ -157,6 +157,68 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
 
   let deletedSpot = await spot.destroy();
   return res.status(200).json({ message: 'Successfully deleted' });
+});
+
+//*Get all Reviews by a Spot's id
+//TODO: include ReviewImages once model is made
+router.get('/:spotId/reviews', async (req, res, next) => {
+  const spotId = req.params.spotId;
+
+  try {
+    const spot = await Spot.findByPk(spotId);
+
+    const spotReviews = await Review.findAll({
+      where: {
+        spot_Id: spot.id,
+      },
+    });
+
+    return res.status(200).json(spotReviews);
+  } catch (e) {
+    e.status = 404;
+    e.message = "Spot couldn't be found";
+    next(e);
+  }
+});
+
+//* Create a Review for a Spot based on the Spot's id
+router.post('/:spotId/reviews', requireAuth, async (req, res) => {
+  //get the ids for user and spots
+  const spotId = req.params.spotId;
+  const userId = req.user.id;
+
+  //get req body
+  const { review, stars } = req.body;
+
+  //check if the spot exists
+  const existingSpot = await Spot.findByPk(spotId);
+  if (existingSpot === null) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
+
+  //check if a review for this spot by the user already exists
+  const existingUserReview = await Review.findAll({
+    where: {
+      user_Id: userId,
+      spot_Id: spotId,
+    },
+  });
+
+  //if the review exists/ return response stating user has a review already
+  if (existingUserReview.length) {
+    return res
+      .status(500)
+      .json({ message: 'User already has a review for this spot' });
+  }
+
+  const newReview = await Review.create({
+    user_Id: userId,
+    spot_Id: spotId,
+    review: review,
+    stars: stars,
+  });
+
+  return res.status(200).json(newReview);
 });
 
 module.exports = router;

@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Review.belongsTo(models.User, { foreignKey: 'user_Id' });
+      Review.belongsTo(models.Spot, { foreignKey: 'spot_Id' });
     }
   }
   Review.init(
@@ -17,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         references: {
           model: 'User',
+          key: 'id',
         },
         allowNull: false,
         validate: {
@@ -27,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         references: {
           model: 'Spot',
+          key: 'id',
         },
         allowNull: false,
         validate: {
@@ -53,13 +57,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Review',
-      //* unique index for each user to only have 1 review on each spot
-      indexes: [
-        {
-          unique: true,
-          fields: ['user_Id', 'spot_Id'],
-        },
-      ],
     }
   );
   return Review;
