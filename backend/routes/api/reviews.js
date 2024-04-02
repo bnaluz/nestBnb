@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { Review, User, Spot } = require('../../db/models');
+const { Review, User, Spot, ReviewImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 
 //* GET ALL REVIEWS OF CURRENT USER
@@ -32,7 +32,49 @@ router.get('/current', requireAuth, async (req, res) => {
 });
 
 //*ADD AN IMAGE TO A REVIEW BASED ON REVIEW ID
-//TODO: STILL NEED TO MAKE THE REVIEWIMAGES TABLE
+router.post('/:reviewId/images', requireAuth, async (req, res) => {
+  //get the needed variables to identify the model instances
+  const userId = req.user.id;
+  const reviewId = req.params.reviewId;
+
+  const { url } = req.body;
+
+  //find the review instance
+  const reviewToAddImage = await Review.findByPk(reviewId, {
+    include: [
+      {
+        model: ReviewImage,
+      },
+    ],
+  });
+
+  console.log(reviewToAddImage.ReviewImages.length);
+  //if review doesnt exist
+  if (reviewToAddImage === null) {
+    return res.status(404).json({ message: "Review couldn't be found" });
+  }
+
+  //if there are already 10 images on the review
+  if (reviewToAddImage.ReviewImages.length >= 10) {
+    return res
+      .status(403)
+      .json({
+        message: 'Maximum number of images for this resource was reached',
+      });
+  }
+
+  //only the review owner can add images
+  if (reviewToAddImage.user_Id !== userId) {
+    return res.status(403).json({ message: 'Cannot edit other user reviews' });
+  }
+
+  const imageToAdd = await ReviewImage.create({
+    url: url,
+    review_Id: reviewId,
+  });
+
+  return res.status(200).json({ id: imageToAdd.id, url: imageToAdd.url });
+});
 
 //*EDIT A REVIEW
 router.put('/:reviewId', requireAuth, async (req, res) => {
