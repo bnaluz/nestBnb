@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { Spot, Review } = require('../../db/models');
+const { Spot, Review, Booking, User } = require('../../db/models');
 const { SpotImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
+const { Op } = require('sequelize');
 
 //* GET ALL SPOTS
 router.get('/', async (req, res) => {
@@ -219,6 +220,205 @@ router.post('/:spotId/reviews', requireAuth, async (req, res) => {
   });
 
   return res.status(200).json(newReview);
+});
+
+//*GET ALL BOOKINGS FOR A SPOTID
+
+router.get('/:spotId/bookings', requireAuth, async (req, res) => {
+  const spotId = req.params.spotId;
+  const userId = req.user.id;
+
+  //find the spot
+  const spot = await Spot.findByPk(spotId);
+
+  //if it doesn't exitst
+  if (spot === null) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
+
+  //use date formatters from booking then map through results
+  const startAndEndDateFormatter = (date) => {
+    return date.toISOString().split('T')[0];
+  };
+
+  const createdAndUpdatedFormatter = (date) => {
+    const under10Formatter = (num) => {
+      if (num < 10) {
+        return '0' + num;
+      } else return num;
+    };
+
+    const year = date.getFullYear();
+    const month = under10Formatter(date.getMonth());
+    const day = under10Formatter(date.getDate());
+    const hours = under10Formatter(date.getHours());
+    const min = under10Formatter(date.getMinutes());
+    const sec = under10Formatter(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+  };
+
+  //case for either spot owner or other
+  if (spot.owner_id === Number(userId)) {
+    console.log('here');
+    const bookings = await Booking.findAll({
+      where: {
+        spot_Id: spot.id,
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName'],
+        },
+      ],
+      attributes: [
+        'id',
+        'spot_Id',
+        'user_Id',
+        'start_date',
+        'end_date',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
+
+    const formattedBookings = bookings.map((booking) => {
+      return {
+        User: {
+          id: booking.User.id,
+          firstName: booking.User.firstName,
+          lastName: booking.User.lastName,
+        },
+        id: booking.id,
+        spotId: booking.spot_Id,
+        userId: booking.user_Id,
+        startDate: startAndEndDateFormatter(booking.start_date),
+        endDate: startAndEndDateFormatter(booking.end_date),
+        createdAt: createdAndUpdatedFormatter(booking.createdAt),
+        updatedAt: createdAndUpdatedFormatter(booking.updatedAt),
+      };
+    });
+
+    //return the formatted bookings
+    return res.status(200).json({ Bookings: formattedBookings });
+  } else {
+    //else case for non spot owner
+    const bookings = await Booking.findAll({
+      where: {
+        spot_Id: spot.id,
+      },
+      attributes: ['spot_Id', 'start_date', 'end_date'],
+    });
+    const formattedBookings = bookings.map((booking) => ({
+      spotId: booking.spot_Id,
+      startDate: booking.start_date,
+      endDate: booking.end_date,
+    }));
+
+    return res.status(200).json({ Bookings: formattedBookings });
+  }
+});
+
+//* CREATE BOOKING FROM SPOT ID
+router.post('/:spotId/bookings', requireAuth, async (req, res) => {
+  //get needed ids
+  const spotId = req.params.spotId;
+  const userId = req.user.id;
+
+  //req body is coming in as string
+  const { startDate, endDate } = req.body;
+
+  //check if spot exists
+  const spotToBeBooked = await Spot.findByPk(spotId);
+  if (spotToBeBooked === null) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
+
+  //establish today and turn req strings into date obj
+  const today = new Date();
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  //conditionals to ensure dates would be valid
+  if (today.getTime() > start.getTime()) {
+    return res.status(400).json({ message: 'startDate cannot be in the past' });
+  }
+  if (end.getTime() === start.getTime() || end.getTime() < start.getTime()) {
+    return res
+      .status(400)
+      .json({ message: 'endDate cannot be on or before startDate' });
+  }
+
+  //query db to check for conflicting dates
+  const conflictingBookings = await Booking.findAll({
+    where: {
+      spot_Id: spotId,
+      [Op.and]: [
+        { start_date: { [Op.lt]: end } },
+        { end_date: { [Op.gt]: start } },
+      ],
+    },
+  });
+
+  //if conflicting bookings exist return the error
+  if (conflictingBookings.length > 0) {
+    return res.status(403).json({
+      message: 'Sorry, this spot is already booked for the specified dates',
+      errors: {
+        startDate: 'Start date conflicts with an existing booking',
+        endDate: 'End date conflicts with an existing booking',
+      },
+    });
+  }
+
+  //if it makes it here try to create the booking
+  const newBooking = await Booking.create({
+    spot_Id: spotId,
+    user_Id: userId,
+    start_date: startDate,
+    end_date: endDate,
+  });
+
+  //booking is created but response needs formatting for dates
+  const startAndEndDateFormatter = (date) => {
+    return date.toISOString().split('T')[0];
+  };
+
+  const formattedStart = startAndEndDateFormatter(newBooking.start_date);
+  const formattedEnd = startAndEndDateFormatter(newBooking.end_date);
+
+  const createdAndUpdatedFormatter = (date) => {
+    const under10Formatter = (num) => {
+      if (num < 10) {
+        return '0' + num;
+      } else return num;
+    };
+
+    const year = date.getFullYear();
+    const month = under10Formatter(date.getMonth());
+    const day = under10Formatter(date.getDate());
+    const hours = under10Formatter(date.getHours());
+    const min = under10Formatter(date.getMinutes());
+    const sec = under10Formatter(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+  };
+
+  const formattedCreated = createdAndUpdatedFormatter(newBooking.createdAt);
+  const formattedUpdated = createdAndUpdatedFormatter(newBooking.updatedAt);
+
+  //create a res object to use instead of newBooking
+  const formattedBookingForDates = {
+    id: newBooking.id,
+    spotId: newBooking.spot_Id,
+    userId: newBooking.user_Id,
+    startDate: formattedStart,
+    endDate: formattedEnd,
+    createdAt: formattedCreated,
+    updatedAt: formattedUpdated,
+  };
+
+  return res.status(200).json(formattedBookingForDates);
 });
 
 module.exports = router;
