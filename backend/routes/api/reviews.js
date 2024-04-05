@@ -56,11 +56,9 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
 
   //if there are already 10 images on the review
   if (reviewToAddImage.ReviewImages.length >= 10) {
-    return res
-      .status(403)
-      .json({
-        message: 'Maximum number of images for this resource was reached',
-      });
+    return res.status(403).json({
+      message: 'Maximum number of images for this resource was reached',
+    });
   }
 
   //only the review owner can add images
@@ -148,5 +146,34 @@ router.delete('/:reviewId', requireAuth, async (req, res) => {
     return res.status(200).json({ message: 'Successfully deleted' });
   }
 });
+
+//*DELETE A REVIEW IMAGE
+router.delete(
+  '/:reviewId/images/:reviewImageId',
+  requireAuth,
+  async (req, res) => {
+    const reviewId = req.params.reviewId;
+    const userId = req.user.id;
+    const reviewImageId = req.params.reviewImageId;
+
+    const review = await Review.findByPk(reviewId);
+
+    if (review.user_Id !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Cannot delete other user's images" });
+    }
+
+    const reviewImage = await ReviewImage.findByPk(reviewImageId);
+
+    if (reviewImage === null) {
+      return res
+        .status(400)
+        .json({ message: "Review image couldn't be found" });
+    } else {
+      return res.status(200).json({ message: 'Sucessfully deleted' });
+    }
+  }
+);
 
 module.exports = router;
