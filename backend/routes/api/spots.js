@@ -7,9 +7,111 @@ const { Op } = require('sequelize');
 
 //* GET ALL SPOTS
 router.get('/', async (req, res) => {
-  const allSpots = await Spot.findAll({});
+  //get the page and size from the query
+  let page = parseInt(req.query.page) || 1;
+  let size = parseInt(req.query.size) || 20;
 
-  return res.status(200).json(allSpots);
+  //check page and size values
+  if (isNaN(page) || page < 1) {
+    return res.status(400).json({
+      message: 'Bad Request',
+      error: 'Page must be a number greater than or equal to 1',
+    });
+  }
+
+  if (isNaN(size) || size < 1 || size > 20) {
+    return res.status(400).json({
+      message: 'Bad Request',
+      error: 'Size must be between 1 and 20',
+    });
+  }
+
+  //get the rest of the query
+  const { minLat, maxLat, minLng, maxLng, maxPrice, minPrice } = req.query;
+  //create a filter obj & error obj to handle case to either add filter query or throw a new error
+  let errors = {};
+  let filters = {};
+
+  //validate the queries and add them as keys to the obj if they pass
+
+  if (
+    minLat !== undefined &&
+    !isNaN(parseInt(minLat)) &&
+    parseInt(minLat) >= -90 &&
+    parseInt(minLat) <= 90
+  ) {
+    filters.lat = { ...filters.lat, [Op.gte]: parseInt(minLat) };
+  } else if (minLat !== undefined) {
+    errors.minLat = 'Minimum latitude is invalid';
+  }
+
+  if (
+    maxLat !== undefined &&
+    !isNaN(parseInt(maxLat)) &&
+    parseInt(maxLat) >= -90 &&
+    parseInt(maxLat) <= 90
+  ) {
+    filters.lat = { ...filters.lat, [Op.lte]: parseInt(maxLat) };
+  } else if (maxLat !== undefined) {
+    errors.maxLat = 'Maximum latitude is invalid';
+  }
+
+  if (
+    minLng !== undefined &&
+    !isNaN(parseFloat(minLng)) &&
+    parseFloat(minLng) >= -180 &&
+    parseFloat(minLng) <= 180
+  ) {
+    filters.lng = { ...filters.lng, [Op.gte]: parseFloat(minLng) };
+  } else if (minLng !== undefined) {
+    errors.minLng = 'Minimum longitude must be between -180 and 180';
+  }
+
+  if (
+    maxLng !== undefined &&
+    !isNaN(parseInt(maxLng)) &&
+    parseInt(maxLng) >= -180 &&
+    parseInt(maxLng) <= 180
+  ) {
+    filters.lng = { ...filters.lng, [Op.lte]: parseInt(maxLng) };
+  } else if (maxLng !== undefined) {
+    errors.maxLng = 'Maximum longitude is invalid';
+  }
+
+  if (
+    minPrice !== undefined &&
+    !isNaN(parseInt(minPrice)) &&
+    parseInt(minPrice) >= 0
+  ) {
+    filters.price = { ...filters.price, [Op.gte]: parseInt(minPrice) };
+  } else if (minPrice !== undefined) {
+    errors.minPrice = 'Minimum price must be greater than or equal to 0';
+  }
+
+  if (
+    maxPrice !== undefined &&
+    !isNaN(parseInt(maxPrice)) &&
+    parseInt(maxPrice) >= 0
+  ) {
+    filters.price = { ...filters.price, [Op.lte]: parseInt(maxPrice) };
+  } else if (maxPrice !== undefined) {
+    errors.maxPrice = 'Maximum price must be greater than or equal to 0';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ message: 'Bad Request', errors });
+  }
+
+  const spots = await Spot.findAll({
+    where: filters,
+    limit: size,
+    offset: (page - 1) * size,
+  });
+
+  return res.status(200).json({ Spots: spots, page, size });
+  // const allSpots = await Spot.findAll({});
+
+  // return res.status(200).json(allSpots);
 });
 
 //*GET ALL USER SPOTS
