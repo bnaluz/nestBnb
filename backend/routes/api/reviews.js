@@ -48,7 +48,6 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
     ],
   });
 
-  console.log(reviewToAddImage.ReviewImages.length);
   //if review doesnt exist
   if (reviewToAddImage === null) {
     return res.status(404).json({ message: "Review couldn't be found" });

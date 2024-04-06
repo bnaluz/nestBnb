@@ -175,7 +175,7 @@ router.get('/:spotId', async (req, res) => {
       [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
       [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgStarRating'],
     ],
-    group: ['Spot.id'],
+    group: ['Spot.id', 'SpotImages.id'], //! error message from postman tests mentioned needing SpotImages.id in group by, trying this
   });
 
   if (spot !== null) {
@@ -228,7 +228,7 @@ router.post('/:spotsId/images', requireAuth, async (req, res) => {
 
   if (spot === null) {
     return res.status(404).json({ message: "Spot couldn't be found" });
-  } else if (spot.user_Id !== userId) {
+  } else if (spot.owner_id !== userId) {
     return res
       .status(403)
       .json({ message: "Cannot add images to other user's spots" });
@@ -296,8 +296,7 @@ router.put('/:spotId', requireAuth, async (req, res) => {
 
     return res.status(200).json(updatedSpot);
   } catch (e) {
-    e.status = 400;
-    return next(e);
+    return res.status(400).json({ message: 'Bad Request', error: `${e}` });
   }
 });
 
