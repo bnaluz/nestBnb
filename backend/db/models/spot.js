@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Spot.belongsTo(models.User, { foreignKey: 'id' });
+      Spot.belongsTo(models.User, { foreignKey: 'owner_id' });
       Spot.hasMany(models.SpotImage, { foreignKey: 'spot_Id' });
       Spot.hasMany(models.Review, { foreignKey: 'spot_Id' });
       Spot.hasMany(models.Bookings, { foreignKey: 'spot_Id' });
@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         references: {
           model: 'User',
+          foreignKey: 'id',
         },
       },
       address: {
