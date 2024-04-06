@@ -1,7 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { Spot, Review, Booking, User } = require('../../db/models');
-const { SpotImage } = require('../../db/models');
+const {
+  Spot,
+  Review,
+  Booking,
+  User,
+  Sequelize,
+  sequelize,
+} = require('../../db/models');
+const { SpotImage, ReviewImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const { Op } = require('sequelize');
 
@@ -115,7 +122,7 @@ router.get('/', async (req, res) => {
 });
 
 //*GET ALL USER SPOTS
-//TODO: need to add/include aggregate starRating, numReviews and SpotImages []
+//TODO:ON IMAGE CREATION if preview is true, then update spots previewImg string
 router.get('/current', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
@@ -123,18 +130,53 @@ router.get('/current', requireAuth, async (req, res) => {
     where: {
       owner_id: userId,
     },
+    include: [
+      {
+        model: Review,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgRating'],
+      ],
+      exclude: ['owner_id'],
+    },
+    group: ['Spot.id'],
   });
-
   return res.status(200).json(userSpots);
 });
 
-//* GET SPECIFIC SPOT
-//TODO: include associations (SpotImages) + reviews and avgStarRating
+//* GET SPECIFIC SPOT DETAILS
 router.get('/:spotId', async (req, res) => {
   const spotId = req.params.spotId;
 
   console.log(spotId);
-  const spot = await Spot.findByPk(spotId);
+  const spot = await Spot.findByPk(spotId, {
+    include: [
+      { model: SpotImage, attributes: ['id', 'url', 'preview'] },
+      { model: Review, attributes: [] },
+      { model: User, attributes: ['id', 'firstName', 'lastName'] },
+    ],
+    attributes: [
+      'id',
+      'owner_Id',
+      'address',
+      'city',
+      'state',
+      'country',
+      'lat',
+      'lng',
+      'name',
+      'description',
+      'price',
+      'createdAt',
+      'updatedAt',
+      [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
+      [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgStarRating'],
+    ],
+    group: ['Spot.id'],
+  });
 
   if (spot !== null) {
     return res.status(200).json(spot);
@@ -193,6 +235,12 @@ router.post('/:spotsId/images', async (req, res) => {
       url: url,
       preview: preview || false,
     });
+
+    if (newImage.preview === true) {
+      await spot.update({
+        preview_image: newImage.url,
+      });
+    }
 
     return res
       .status(200)
@@ -263,7 +311,7 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
 });
 
 //*Get all Reviews by a Spot's id
-//TODO: include ReviewImages once model is made
+
 router.get('/:spotId/reviews', async (req, res, next) => {
   const spotId = req.params.spotId;
 
@@ -274,6 +322,16 @@ router.get('/:spotId/reviews', async (req, res, next) => {
       where: {
         spot_Id: spot.id,
       },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName'],
+        },
+        {
+          model: ReviewImage,
+          attributes: ['id', 'url'],
+        },
+      ],
     });
 
     return res.status(200).json(spotReviews);

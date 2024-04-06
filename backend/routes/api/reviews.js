@@ -5,7 +5,6 @@ const { Review, User, Spot, ReviewImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 
 //* GET ALL REVIEWS OF CURRENT USER
-//TODO: missing include ReviewImages
 router.get('/current', requireAuth, async (req, res) => {
   const user_Id = req.user.id;
   const allReviews = await Review.findAll({
@@ -25,6 +24,7 @@ router.get('/current', requireAuth, async (req, res) => {
           exclude: ['createdAt', 'updatedAt', 'description'],
         },
       },
+      { model: ReviewImage, attributes: ['id', 'url'] },
     ],
   });
 
