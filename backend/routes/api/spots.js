@@ -581,32 +581,4 @@ router.post('/:spotId/bookings', requireAuth, async (req, res) => {
   return res.status(200).json(formattedBookingForDates);
 });
 
-//*DELETE A SPOT IMAGE
-router.delete('/:spotId/images/:spotImageId', requireAuth, async (req, res) => {
-  //get the spot and check if the spot belongs to current user
-  const spotId = req.params.spotId;
-  const spotImageId = req.params.spotImageId;
-  const userId = req.user.id;
-
-  //find the spot
-  const spot = await Spot.findByPk(spotId);
-  //check if its the users
-  if (spot.owner_id !== userId) {
-    return res
-      .status(403)
-      .json({ message: "Cannot delete other user's images" });
-  }
-
-  //find the image
-  const spotImage = await SpotImage.findByPk(spotImageId);
-
-  //if found delete or throw error
-  if (spotImage === null) {
-    return res.status(400).json({ message: "Spot image couldn't be found" });
-  } else {
-    spotImage.destroy();
-    return res.status(200).json({ message: 'Successfully deleted' });
-  }
-});
-
 module.exports = router;
