@@ -7,6 +7,8 @@ const usersRouter = require('./users.js');
 const spotsRouter = require('./spots.js');
 const reviewsRouter = require('./reviews.js');
 const bookingsRouter = require('./bookings.js');
+const deleteSpotImage = require('./spot-images.js');
+const deleteReviewImage = require('./review-images.js');
 
 router.get('/set-token-cookie', async (_req, res) => {
   const user = await User.findOne({
@@ -39,6 +41,10 @@ router.use('/spots', spotsRouter);
 router.use('/reviews', reviewsRouter);
 
 router.use('/bookings', bookingsRouter);
+
+router.use('/spot-images', deleteSpotImage);
+
+router.use('/review-images', deleteReviewImage);
 
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
