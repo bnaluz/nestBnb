@@ -160,7 +160,7 @@ router.get('/:spotId', async (req, res) => {
     ],
     attributes: [
       'id',
-      'owner_Id',
+      'owner_id',
       'address',
       'city',
       'state',
@@ -224,9 +224,14 @@ router.post('/', requireAuth, async (req, res, next) => {
 router.post('/:spotsId/images', requireAuth, async (req, res) => {
   const spotId = req.params.spotsId;
   const spot = await Spot.findByPk(spotId);
+  const userId = req.user.id;
 
   if (spot === null) {
     return res.status(404).json({ message: "Spot couldn't be found" });
+  } else if (spot.user_Id !== userId) {
+    return res
+      .status(403)
+      .json({ message: "Cannot add images to other user's spots" });
   } else {
     const { url, preview } = req.body;
 
@@ -258,6 +263,10 @@ router.put('/:spotId', requireAuth, async (req, res) => {
 
     if (spot === null) {
       return res.status(404).json({ message: "Spot couldn't be found" });
+    } else if (spot.owner_id !== owner_id) {
+      return res
+        .status(403)
+        .json({ message: "Cannot edit another user's spot" });
     }
 
     const {
@@ -303,7 +312,9 @@ router.delete('/:spotId', requireAuth, async (req, res) => {
   }
 
   if (spot.owner_id !== owner_id) {
-    throw new Error('only owners can delete spot');
+    return res
+      .status(403)
+      .json({ message: "Cannot delete another user's spot" });
   }
 
   let deletedSpot = await spot.destroy();
