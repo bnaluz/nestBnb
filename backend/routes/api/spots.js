@@ -221,7 +221,7 @@ router.post('/', requireAuth, async (req, res, next) => {
   }
 });
 
-router.post('/:spotsId/images', async (req, res) => {
+router.post('/:spotsId/images', requireAuth, async (req, res) => {
   const spotId = req.params.spotsId;
   const spot = await Spot.findByPk(spotId);
 
