@@ -115,7 +115,30 @@ router.get('/', async (req, res) => {
     offset: (page - 1) * size,
   });
 
-  return res.status(200).json({ Spots: spots, page, size });
+  const createdAndUpdatedFormatter = (date) => {
+    const under10Formatter = (num) => {
+      if (num < 10) {
+        return '0' + num;
+      } else return num;
+    };
+
+    const year = date.getFullYear();
+    const month = under10Formatter(date.getMonth());
+    const day = under10Formatter(date.getDate());
+    const hours = under10Formatter(date.getHours());
+    const min = under10Formatter(date.getMinutes());
+    const sec = under10Formatter(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+  };
+
+  const formattedSpots = spots.map((spot) => ({
+    ...spot.dataValues,
+    createdAt: createdAndUpdatedFormatter(spot.createdAt),
+    updatedAt: createdAndUpdatedFormatter(spot.updatedAt),
+  }));
+
+  return res.status(200).json({ Spots: formattedSpots, page, size });
   // const allSpots = await Spot.findAll({});
 
   // return res.status(200).json(allSpots);
