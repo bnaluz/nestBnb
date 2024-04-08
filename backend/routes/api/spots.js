@@ -255,7 +255,7 @@ router.get('/:spotId', async (req, res) => {
       [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
       [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgStarRating'],
     ],
-    group: ['Spot.id', 'SpotImages.id'], //! error message from postman tests mentioned needing SpotImages.id in group by, trying this
+    group: ['Spot.id', 'SpotImages.id', 'User.id'],
   });
 
   if (spot !== null) {
