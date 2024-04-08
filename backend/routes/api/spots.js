@@ -111,9 +111,42 @@ router.get('/', async (req, res) => {
 
   const spots = await Spot.findAll({
     where: filters,
+    include: [
+      {
+        model: Review,
+        attributes: [],
+      },
+    ],
+    attributes: {
+      include: [
+        'id',
+        'owner_id',
+        'address',
+        'city',
+        'state',
+        'country',
+        'lat',
+        'lng',
+        'name',
+        'description',
+        'price',
+        'preview_image',
+        'createdAt',
+        'updatedAt',
+        [
+          Sequelize.literal(
+            `(SELECT AVG(stars) FROM Reviews WHERE Reviews.spot_Id = Spot.id)`
+          ),
+          'avgRating',
+        ],
+      ],
+    },
+    group: ['Spot.id'],
     limit: size,
     offset: (page - 1) * size,
   });
+
+  //needed sequelize.literal to include pagination controls from query, would error out with sequelize fn
 
   const createdAndUpdatedFormatter = (date) => {
     const under10Formatter = (num) => {
@@ -132,16 +165,34 @@ router.get('/', async (req, res) => {
     return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
   };
 
-  const formattedSpots = spots.map((spot) => ({
-    ...spot.dataValues,
-    createdAt: createdAndUpdatedFormatter(spot.createdAt),
-    updatedAt: createdAndUpdatedFormatter(spot.updatedAt),
-  }));
+  const formattedSpots = spots.map((spot) => {
+    //using sequelize get to pojo from res data
+    const spotData = spot.get({ plain: true });
+    console.log(spotData);
+    //toJSON does the same thing
+    // const spotData = spot.toJSON();
+    // console.log(spotData);
+
+    return {
+      id: spotData.id,
+      ownerId: spotData.owner_id,
+      address: spotData.address,
+      city: spotData.city,
+      state: spotData.state,
+      country: spotData.country,
+      lat: spotData.lat,
+      lng: spotData.lng,
+      name: spotData.name,
+      description: spotData.description,
+      price: spotData.price,
+      createdAt: createdAndUpdatedFormatter(spotData.createdAt),
+      updatedAt: createdAndUpdatedFormatter(spotData.updatedAt),
+      avgRating: spotData.avgRating,
+      previewImage: spotData.preview_image || 'defaultURL',
+    };
+  });
 
   return res.status(200).json({ Spots: formattedSpots, page, size });
-  // const allSpots = await Spot.findAll({});
-
-  // return res.status(200).json(allSpots);
 });
 
 //*GET ALL USER SPOTS
