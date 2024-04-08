@@ -255,7 +255,7 @@ router.get('/:spotId', async (req, res) => {
       [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
       [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgStarRating'],
     ],
-    group: ['Spot.id', 'SpotImages.id', 'User.id'],
+    group: ['Spot.id', 'SpotImages.id', 'User.id', 'Reviews.id'],
   });
 
   const createdAndUpdatedFormatter = (date) => {
