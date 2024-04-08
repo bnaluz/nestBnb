@@ -231,11 +231,11 @@ router.get('/current', requireAuth, async (req, res) => {
 router.get('/:spotId', async (req, res) => {
   const spotId = req.params.spotId;
 
-  console.log(spotId);
+  // console.log(spotId);
   const spot = await Spot.findByPk(spotId, {
     include: [
       { model: SpotImage, attributes: ['id', 'url', 'preview'] },
-      { model: Review, attributes: [] },
+      { model: Review, attributes: ['stars'], required: false },
       { model: User, attributes: ['id', 'firstName', 'lastName'] },
     ],
     attributes: [
@@ -258,8 +258,64 @@ router.get('/:spotId', async (req, res) => {
     group: ['Spot.id', 'SpotImages.id', 'User.id'],
   });
 
-  if (spot !== null) {
-    return res.status(200).json(spot);
+  const createdAndUpdatedFormatter = (date) => {
+    const under10Formatter = (num) => {
+      if (num < 10) {
+        return '0' + num;
+      } else return num;
+    };
+
+    const year = date.getFullYear();
+    const month = under10Formatter(date.getMonth());
+    const day = under10Formatter(date.getDate());
+    const hours = under10Formatter(date.getHours());
+    const min = under10Formatter(date.getMinutes());
+    const sec = under10Formatter(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+  };
+
+  if (spot) {
+    const spotData = spot.get({ plain: true });
+    let avgRating = null;
+
+    let numReviews = spotData.Reviews.length;
+    if (spotData.Reviews && spotData.Reviews.length > 0) {
+      const totalStars = spotData.Reviews.reduce(
+        (sum, review) => sum + review.stars,
+        0
+      );
+      avgRating = totalStars / spotData.Reviews.length;
+    }
+    const formattedSpot = {
+      id: spotData.id,
+      ownerId: spotData.owner_id,
+      address: spotData.address,
+      city: spotData.city,
+      state: spotData.state,
+      country: spotData.country,
+      lat: spotData.lat,
+      lng: spotData.lng,
+      name: spotData.name,
+      description: spotData.description,
+      price: spotData.price,
+      createdAt: createdAndUpdatedFormatter(spotData.createdAt),
+      updatedAt: createdAndUpdatedFormatter(spotData.updatedAt),
+      numReviews: numReviews,
+      avgRating: avgRating,
+      previewImage: spotData.preview_image || 'defaultURL',
+      SpotImages: spotData.SpotImages.map((img) => ({
+        id: img.id,
+        url: img.url,
+        preview: img.preview,
+      })),
+      Owner: {
+        id: spotData.User.id,
+        firstName: spotData.User.firstName,
+        lastName: spotData.User.lastName,
+      },
+    };
+    return res.status(200).json(formattedSpot);
   } else {
     return res.status(404).json({ message: "Spot couldn't be found" });
   }
@@ -294,7 +350,40 @@ router.post('/', requireAuth, async (req, res, next) => {
       owner_id: owner_id,
     });
 
-    return res.status(201).json(newSpot);
+    const createdAndUpdatedFormatter = (date) => {
+      const under10Formatter = (num) => {
+        if (num < 10) {
+          return '0' + num;
+        } else return num;
+      };
+
+      const year = date.getFullYear();
+      const month = under10Formatter(date.getMonth());
+      const day = under10Formatter(date.getDate());
+      const hours = under10Formatter(date.getHours());
+      const min = under10Formatter(date.getMinutes());
+      const sec = under10Formatter(date.getSeconds());
+
+      return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+    };
+
+    const formattedNewSpot = {
+      id: newSpot.id,
+      ownerId: newSpot.owner_id,
+      address: newSpot.address,
+      city: newSpot.city,
+      state: newSpot.state,
+      country: newSpot.country,
+      lat: newSpot.lat,
+      lng: newSpot.lng,
+      name: newSpot.name,
+      description: newSpot.description,
+      price: newSpot.price,
+      createdAt: createdAndUpdatedFormatter(newSpot.createdAt),
+      updatedAt: createdAndUpdatedFormatter(newSpot.updatedAt),
+    };
+
+    return res.status(201).json(formattedNewSpot);
   } catch (e) {
     e.status = 400;
     return next(e);
