@@ -140,6 +140,7 @@ router.get('/', async (req, res) => {
     group: ['Spot.id'],
     limit: size,
     offset: (page - 1) * size,
+    order: [['id', 'ASC']],
   });
 
   //needed sequelize.literal to include pagination controls from query, would error out with sequelize fn
