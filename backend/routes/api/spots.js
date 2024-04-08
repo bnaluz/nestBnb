@@ -661,8 +661,8 @@ router.post('/:spotId/reviews', requireAuth, async (req, res) => {
     id: newReview.id,
     userId: newReview.user_Id,
     spotId: newReview.spot_Id,
-    review: newSpot.review,
-    stars: newSpot.stars,
+    review: newReview.review,
+    stars: newReview.stars,
     createdAt: createdAndUpdatedFormatter(newReview.createdAt),
     updatedAt: createdAndUpdatedFormatter(newReview.updatedAt),
   };
