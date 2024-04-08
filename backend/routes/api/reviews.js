@@ -7,7 +7,7 @@ const { requireAuth } = require('../../utils/auth');
 //* GET ALL REVIEWS OF CURRENT USER
 router.get('/current', requireAuth, async (req, res) => {
   const user_Id = req.user.id;
-  const allReviews = await Review.findAll({
+  const userReviews = await Review.findAll({
     where: {
       user_Id: user_Id,
     },
@@ -28,7 +28,53 @@ router.get('/current', requireAuth, async (req, res) => {
     ],
   });
 
-  return res.status(200).json(allReviews);
+  const createdAndUpdatedFormatter = (date) => {
+    const under10Formatter = (num) => {
+      if (num < 10) {
+        return '0' + num;
+      } else return num;
+    };
+
+    const year = date.getFullYear();
+    const month = under10Formatter(date.getMonth());
+    const day = under10Formatter(date.getDate());
+    const hours = under10Formatter(date.getHours());
+    const min = under10Formatter(date.getMinutes());
+    const sec = under10Formatter(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+  };
+
+  const formattedReviews = userReviews.map((review) => ({
+    id: review.id,
+    spotId: review.Spot.id,
+    review: review.review,
+    stars: review.stars,
+    createdAt: createdAndUpdatedFormatter(review.createdAt),
+    updatedAt: createdAndUpdatedFormatter(review.updatedAt),
+    User: {
+      id: review.User.id,
+      firstName: review.User.firstName,
+      lastName: review.User.lastName,
+    },
+    Spot: {
+      id: review.Spot.id,
+      name: review.Spot.name,
+      address: review.Spot.address,
+      city: review.Spot.city,
+      state: review.Spot.state,
+      country: review.Spot.country,
+      lat: review.Spot.lat,
+      lng: review.Spot.lng,
+      price: review.Spot.price,
+    },
+    ReviewImages: review.ReviewImages.map((img) => ({
+      id: img.id,
+      url: img.url,
+    })),
+  }));
+
+  return res.status(200).json(formattedReviews);
 });
 
 //*ADD AN IMAGE TO A REVIEW BASED ON REVIEW ID
