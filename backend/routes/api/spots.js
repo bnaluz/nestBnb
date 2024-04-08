@@ -604,8 +604,8 @@ router.post('/:spotId/bookings', requireAuth, async (req, res) => {
     where: {
       spot_Id: spotId,
       [Op.and]: [
-        { start_date: { [Op.lt]: end } },
-        { end_date: { [Op.gt]: start } },
+        { start_date: { [Op.lte]: end } },
+        { end_date: { [Op.gte]: start } },
       ],
     },
   });
