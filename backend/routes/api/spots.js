@@ -463,7 +463,40 @@ router.put('/:spotId', requireAuth, async (req, res) => {
       owner_id: owner_id,
     });
 
-    return res.status(200).json(updatedSpot);
+    const createdAndUpdatedFormatter = (date) => {
+      const under10Formatter = (num) => {
+        if (num < 10) {
+          return '0' + num;
+        } else return num;
+      };
+
+      const year = date.getFullYear();
+      const month = under10Formatter(date.getMonth());
+      const day = under10Formatter(date.getDate());
+      const hours = under10Formatter(date.getHours());
+      const min = under10Formatter(date.getMinutes());
+      const sec = under10Formatter(date.getSeconds());
+
+      return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+    };
+
+    const formattedUpdatedSpot = {
+      id: updatedSpot.id,
+      ownerId: updatedSpot.owner_id,
+      address: updatedSpot.address,
+      city: updatedSpot.city,
+      state: updatedSpot.state,
+      country: updatedSpot.country,
+      lat: updatedSpot.lat,
+      lng: updatedSpot.lng,
+      name: updatedSpot.name,
+      description: updatedSpot.description,
+      price: updatedSpot.price,
+      createdAt: createdAndUpdatedFormatter(updatedSpot.createdAt),
+      updatedAt: createdAndUpdatedFormatter(updatedSpot.updatedAt),
+    };
+
+    return res.status(200).json(formattedUpdatedSpot);
   } catch (e) {
     return res.status(400).json({ message: 'Bad Request', error: `${e}` });
   }
