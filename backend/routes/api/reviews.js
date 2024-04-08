@@ -166,7 +166,34 @@ router.put('/:reviewId', requireAuth, async (req, res) => {
     }
   );
 
-  return res.status(200).json(updatedReview);
+  const createdAndUpdatedFormatter = (date) => {
+    const under10Formatter = (num) => {
+      if (num < 10) {
+        return '0' + num;
+      } else return num;
+    };
+
+    const year = date.getFullYear();
+    const month = under10Formatter(date.getMonth());
+    const day = under10Formatter(date.getDate());
+    const hours = under10Formatter(date.getHours());
+    const min = under10Formatter(date.getMinutes());
+    const sec = under10Formatter(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+  };
+
+  const formattedReview = {
+    id: updatedReview.id,
+    userId: updatedReview.user_Id,
+    spotId: updatedReview.spot_Id,
+    review: updatedReview.review,
+    stars: updatedReview.stars,
+    createdAt: createdAndUpdatedFormatter(updatedReview.createdAt),
+    updatedAt: createdAndUpdatedFormatter(updatedReview.updatedAt),
+  };
+
+  return res.status(200).json(formattedReview);
 });
 
 //* DELETE A REVIEW
