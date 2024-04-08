@@ -136,8 +136,9 @@ router.get('/', async (req, res) => {
         'updatedAt',
         [
           Sequelize.literal(
-            `(SELECT AVG(stars) FROM "reviews" WHERE "reviews"."spot_Id" = "Spot"."id") AS "avgRating"`
+            `(SELECT AVG(stars) FROM "reviews" WHERE "reviews"."spot_Id" = "Spot"."id")`
           ),
+          'avgRating',
         ],
       ],
     },
