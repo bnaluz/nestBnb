@@ -82,7 +82,7 @@ router.get('/current', requireAuth, async (req, res) => {
       },
       userId: booking.user_Id,
       startDate: startAndEndDateFormatter(booking.start_date),
-      endDate: startAndEndDateFormatter(booking.endDate),
+      endDate: startAndEndDateFormatter(booking.end_date),
       createdAt: createdAndUpdatedFormatter(booking.createdAt),
       updatedAt: createdAndUpdatedFormatter(booking.updatedAt),
     };
