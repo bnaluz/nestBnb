@@ -640,7 +640,34 @@ router.post('/:spotId/reviews', requireAuth, async (req, res) => {
     stars: stars,
   });
 
-  return res.status(200).json(newReview);
+  const createdAndUpdatedFormatter = (date) => {
+    const under10Formatter = (num) => {
+      if (num < 10) {
+        return '0' + num;
+      } else return num;
+    };
+
+    const year = date.getFullYear();
+    const month = under10Formatter(date.getMonth());
+    const day = under10Formatter(date.getDate());
+    const hours = under10Formatter(date.getHours());
+    const min = under10Formatter(date.getMinutes());
+    const sec = under10Formatter(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+  };
+
+  const formattedReview = {
+    id: newReview.id,
+    userId: newReview.user_Id,
+    spotId: newReview.spot_Id,
+    review: newSpot.review,
+    stars: newSpot.stars,
+    createdAt: createdAndUpdatedFormatter(newReview.createdAt),
+    updatedAt: createdAndUpdatedFormatter(newReview.updatedAt),
+  };
+
+  return res.status(200).json(formattedReview);
 });
 
 //*GET ALL BOOKINGS FOR A SPOTID
