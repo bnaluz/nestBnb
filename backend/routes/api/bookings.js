@@ -56,25 +56,56 @@ router.put('/:bookingId', requireAuth, async (req, res) => {
     return res.status(403).json({ message: "Past bookings can't be modified" });
   }
 
-  //check for conflicting bookings
+  //check for conflicting bookings, only find bookings for the specific spot and exclude the spot being updated so conflict doesnt exist
   const conflictingBookings = await Booking.findAll({
     where: {
-      [Op.and]: [
-        { start_date: { [Op.lt]: end } },
-        { end_date: { [Op.gt]: start } },
+      id: { [Op.ne]: bookingId },
+      spot_Id: bookingToBeUpdated.spot_Id,
+      [Op.or]: [
+        {
+          [Op.and]: [
+            { start_date: { [Op.lte]: end } },
+            { end_date: { [Op.gt]: start } },
+          ],
+        },
+        {
+          [Op.and]: [
+            { start_date: { [Op.lt]: end } },
+            { end_date: { [Op.gte]: start } },
+          ],
+        },
       ],
     },
   });
 
-  if (conflictingBookings.length > 0) {
+  let errors = {};
+
+  conflictingBookings.forEach((conflict) => {
+    if (conflict.end_date > start) {
+      errors.startDate = 'Start date conflicts with an existing booking';
+    }
+    if (conflict.start_date < end) {
+      errors.endDate = 'End date conflicts with an existing booking';
+    }
+  });
+
+  if (Object.keys(errors).length > 0) {
     return res.status(403).json({
       message: 'Sorry, this spot is already booked for the specified dates',
-      errors: {
-        startDate: 'Start date conflicts with an existing booking',
-        endDate: 'End date conflicts with an existing booking',
-      },
+      errors: errors,
     });
   }
+
+  //previous error handling, adjusted to above to reflect only which error date is needed
+  // if (conflictingBookings.length > 0) {
+  //   return res.status(403).json({
+  //     message: 'Sorry, this spot is already booked for the specified dates',
+  //     errors: {
+  //       startDate: 'Start date conflicts with an existing booking',
+  //       endDate: 'End date conflicts with an existing booking',
+  //     },
+  //   });
+  // }
 
   //if it makes it here edit the booking
   const updatedBooking = await bookingToBeUpdated.update({
