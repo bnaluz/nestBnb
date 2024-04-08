@@ -595,7 +595,43 @@ router.get('/:spotId/reviews', async (req, res, next) => {
       ],
     });
 
-    return res.status(200).json(spotReviews);
+    const createdAndUpdatedFormatter = (date) => {
+      const under10Formatter = (num) => {
+        if (num < 10) {
+          return '0' + num;
+        } else return num;
+      };
+
+      const year = date.getFullYear();
+      const month = under10Formatter(date.getMonth());
+      const day = under10Formatter(date.getDate());
+      const hours = under10Formatter(date.getHours());
+      const min = under10Formatter(date.getMinutes());
+      const sec = under10Formatter(date.getSeconds());
+
+      return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+    };
+
+    const formattedReviews = spotReviews.map((review) => ({
+      id: review.id,
+      userId: review.User.id,
+      spotId: spotId,
+      review: review.review,
+      stars: review.stars,
+      createdAt: createdAndUpdatedFormatter(review.createdAt),
+      updatedAt: createdAndUpdatedFormatter(review.updatedAt),
+      User: {
+        id: review.User.id,
+        firstName: review.User.firstName,
+        lastName: review.User.lastName,
+      },
+      ReviewImages: review.ReviewImages.map((img) => ({
+        id: img.id,
+        url: img.url,
+      })),
+    }));
+
+    return res.status(200).json({ Reviews: formattedReviews });
   } catch (e) {
     e.status = 404;
     e.message = "Spot couldn't be found";
