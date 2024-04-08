@@ -9,13 +9,86 @@ const { Op } = require('sequelize');
 router.get('/current', requireAuth, async (req, res) => {
   const userId = req.user.id;
 
+  const startAndEndDateFormatter = (date) => {
+    return date.toISOString().split('T')[0];
+  };
+
+  const createdAndUpdatedFormatter = (date) => {
+    const under10Formatter = (num) => {
+      if (num < 10) {
+        return '0' + num;
+      } else return num;
+    };
+
+    const year = date.getFullYear();
+    const month = under10Formatter(date.getMonth());
+    const day = under10Formatter(date.getDate());
+    const hours = under10Formatter(date.getHours());
+    const min = under10Formatter(date.getMinutes());
+    const sec = under10Formatter(date.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+  };
+
   const usersBookings = await Booking.findAll({
     where: {
       user_Id: userId,
     },
+    include: [
+      {
+        model: Spot,
+        attributes: [
+          'id',
+          'owner_id',
+          'address',
+          'city',
+          'state',
+          'country',
+          'lat',
+          'lng',
+          'name',
+          'price',
+          'preview_image',
+        ],
+      },
+    ],
+    attributes: [
+      'id',
+      'spot_Id',
+      'user_Id',
+      'start_date',
+      'end_date',
+      'createdAt',
+      'updatedAt',
+    ],
   });
 
-  return res.status(200).json(usersBookings);
+  const formattedBookings = usersBookings.map((booking) => {
+    return {
+      id: booking.id,
+      spotId: booking.spot_Id,
+      Spot: {
+        id: booking.Spot.id,
+        ownerId: booking.Spot.owner_id,
+        address: booking.Spot.address,
+        city: booking.Spot.city,
+        state: booking.Spot.state,
+        country: booking.Spot.country,
+        lat: booking.Spot.lat,
+        lng: booking.Spot.lng,
+        name: booking.Spot.name,
+        price: booking.Spot.price,
+        previewImage: booking.Spot.preview_image || null,
+      },
+      userId: booking.user_Id,
+      startDate: startAndEndDateFormatter(booking.start_date),
+      endDate: startAndEndDateFormatter(booking.endDate),
+      createdAt: createdAndUpdatedFormatter(booking.createdAt),
+      updatedAt: createdAndUpdatedFormatter(booking.updatedAt),
+    };
+  });
+
+  return res.status(200).json(formattedBookings);
 });
 
 //*EDIT A BOOKING
