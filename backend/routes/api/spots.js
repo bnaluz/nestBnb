@@ -11,6 +11,7 @@ const {
 const { SpotImage, ReviewImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
 const { Op } = require('sequelize');
+const review = require('../../db/models/review');
 
 //* GET ALL SPOTS
 router.get('/', async (req, res) => {
@@ -114,7 +115,7 @@ router.get('/', async (req, res) => {
     include: [
       {
         model: Review,
-        attributes: [],
+        attributes: ['stars'],
         required: false,
       },
     ],
@@ -134,30 +135,9 @@ router.get('/', async (req, res) => {
         'preview_image',
         'createdAt',
         'updatedAt',
-        [
-          Sequelize.literal(
-            `(SELECT AVG(stars) FROM "reviews" WHERE "reviews"."spot_Id" = "spot"."id")`
-          ),
-          'avgRating',
-        ],
       ],
     },
-    group: [
-      'id',
-      'owner_id',
-      'address',
-      'city',
-      'state',
-      'country',
-      'lat',
-      'lng',
-      'name',
-      'description',
-      'price',
-      'preview_image',
-      'createdAt',
-      'updatedAt',
-    ],
+    group: ['Spot.id'],
     limit: size,
     offset: (page - 1) * size,
   });
@@ -184,10 +164,20 @@ router.get('/', async (req, res) => {
   const formattedSpots = spots.map((spot) => {
     //using sequelize get to pojo from res data
     const spotData = spot.get({ plain: true });
-    console.log(spotData);
+
     //toJSON does the same thing
     // const spotData = spot.toJSON();
     // console.log(spotData);
+
+    let avgRating = null;
+
+    if (spotData.Reviews && spotData.Reviews.length > 0) {
+      const totalStars = spotData.Reviews.reduce(
+        (sum, review) => sum + review.stars,
+        0
+      );
+      avgRating = totalStars / spotData.Reviews.length;
+    }
 
     return {
       id: spotData.id,
@@ -203,7 +193,7 @@ router.get('/', async (req, res) => {
       price: spotData.price,
       createdAt: createdAndUpdatedFormatter(spotData.createdAt),
       updatedAt: createdAndUpdatedFormatter(spotData.updatedAt),
-      avgRating: spotData.avgRating,
+      avgRating: avgRating,
       previewImage: spotData.preview_image || 'defaultURL',
     };
   });
