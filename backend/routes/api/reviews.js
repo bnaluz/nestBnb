@@ -35,7 +35,7 @@ router.get('/current', requireAuth, async (req, res) => {
 router.post('/:reviewId/images', requireAuth, async (req, res) => {
   //get the needed variables to identify the model instances
   const userId = req.user.id;
-  const reviewId = req.params.reviewId;
+  const reviewId = parseInt(req.params.reviewId, 10);
 
   const { url } = req.body;
 
