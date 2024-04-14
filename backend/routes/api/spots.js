@@ -436,7 +436,7 @@ router.post('/', requireAuth, async (req, res, next) => {
     return res.status(201).json(formattedNewSpot);
   } catch (e) {
     e.status = 400;
-    e.message = 'Bad Request';
+    e.message = 'Validation Error';
     return next(e);
   }
 });
