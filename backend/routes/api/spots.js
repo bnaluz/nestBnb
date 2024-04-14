@@ -474,7 +474,7 @@ router.post('/:spotsId/images', requireAuth, async (req, res) => {
 });
 
 //*EDIT A SPOT
-router.put('/:spotId', requireAuth, async (req, res) => {
+router.put('/:spotId', requireAuth, async (req, res, next) => {
   try {
     const spotId = req.params.spotId;
     const spot = await Spot.findByPk(spotId);
@@ -549,7 +549,9 @@ router.put('/:spotId', requireAuth, async (req, res) => {
 
     return res.status(200).json(formattedUpdatedSpot);
   } catch (e) {
-    return res.status(400).json({ message: 'Bad Request', error: `${e}` });
+    e.status = 400;
+    e.message = 'Validation Error';
+    return next(e);
   }
 });
 
