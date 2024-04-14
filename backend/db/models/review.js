@@ -43,6 +43,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
+          notEmpty: true,
         },
       },
       stars: {
