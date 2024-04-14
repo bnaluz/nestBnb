@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         validate: {
           notNull: true,
+          notEmpty: true,
         },
       },
 
@@ -39,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
+          notEmpty: true,
         },
       },
       state: {
@@ -53,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
+          notEmpty: true,
         },
       },
       lat: {
@@ -78,6 +81,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
+          notEmpty: true,
+          len: [2, 50],
         },
       },
       description: {
@@ -85,6 +90,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
+          notEmpty: true,
         },
       },
       price: {
@@ -92,6 +98,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
+          min: 0,
         },
       },
       preview_image: {
