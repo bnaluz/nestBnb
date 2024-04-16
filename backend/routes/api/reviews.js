@@ -94,6 +94,10 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
     ],
   });
 
+  //only the review owner can add images
+  if (reviewToAddImage.user_Id !== userId) {
+    return res.status(403).json({ message: 'Cannot edit other user reviews' });
+  }
   //if review doesnt exist
   if (reviewToAddImage === null) {
     return res.status(404).json({ message: "Review couldn't be found" });
@@ -104,11 +108,6 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
     return res.status(403).json({
       message: 'Maximum number of images for this resource was reached',
     });
-  }
-
-  //only the review owner can add images
-  if (reviewToAddImage.user_Id !== userId) {
-    return res.status(403).json({ message: 'Cannot edit other user reviews' });
   }
 
   const imageToAdd = await ReviewImage.create({
