@@ -128,16 +128,20 @@ router.put('/:reviewId', requireAuth, async (req, res) => {
   //get the possible updated values
   const { review, stars } = req.body;
 
+  let errors = {};
+
   //validation of stars body
   if (stars === undefined || stars > 5 || stars < 1) {
-    return res
-      .status(400)
-      .json({ message: 'Stars must be an integer between 1 and 5' });
+    errors.review = 'Review test is required';
   }
 
   //validation of review body
   if (review === undefined || review.length < 1) {
-    return res.status(400).json({ message: 'Review text is required' });
+    errors.stars = 'Stars must be an integer from 1 to 5';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ message: 'Bad Request', errors });
   }
 
   //find the review
