@@ -822,6 +822,9 @@ router.post('/:spotId/bookings', requireAuth, async (req, res) => {
     return res.status(404).json({ message: "Spot couldn't be found" });
   }
 
+  if (spotToBeBooked.owner_id === userId) {
+    return res.status(403).json({ message: 'Cannot book your own spot' });
+  }
   //establish today and turn req strings into date obj
   const today = new Date();
   const start = new Date(startDate);
