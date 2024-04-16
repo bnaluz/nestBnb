@@ -132,7 +132,7 @@ router.put('/:reviewId', requireAuth, async (req, res) => {
 
   //validation of stars body
   if (stars === undefined || stars > 5 || stars < 1) {
-    errors.review = 'Review test is required';
+    errors.review = 'Review text is required';
   }
 
   //validation of review body
