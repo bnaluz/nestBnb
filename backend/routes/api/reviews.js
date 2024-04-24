@@ -3,6 +3,10 @@ const router = express.Router();
 
 const { Review, User, Spot, ReviewImage } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
+const {
+  createdAndUpdatedFormatter,
+  startAndEndDateFormatter,
+} = require('../../utils/formatters');
 
 //* GET ALL REVIEWS OF CURRENT USER
 router.get('/current', requireAuth, async (req, res) => {
@@ -27,23 +31,6 @@ router.get('/current', requireAuth, async (req, res) => {
       { model: ReviewImage, attributes: ['id', 'url'] },
     ],
   });
-
-  const createdAndUpdatedFormatter = (date) => {
-    const under10Formatter = (num) => {
-      if (num < 10) {
-        return '0' + num;
-      } else return num;
-    };
-
-    const year = date.getFullYear();
-    const month = under10Formatter(date.getMonth());
-    const day = under10Formatter(date.getDate());
-    const hours = under10Formatter(date.getHours());
-    const min = under10Formatter(date.getMinutes());
-    const sec = under10Formatter(date.getSeconds());
-
-    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  };
 
   const formattedReviews = userReviews.map((review) => ({
     id: review.id,
@@ -168,23 +155,6 @@ router.put('/:reviewId', requireAuth, async (req, res) => {
       },
     }
   );
-
-  const createdAndUpdatedFormatter = (date) => {
-    const under10Formatter = (num) => {
-      if (num < 10) {
-        return '0' + num;
-      } else return num;
-    };
-
-    const year = date.getFullYear();
-    const month = under10Formatter(date.getMonth());
-    const day = under10Formatter(date.getDate());
-    const hours = under10Formatter(date.getHours());
-    const min = under10Formatter(date.getMinutes());
-    const sec = under10Formatter(date.getSeconds());
-
-    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  };
 
   const formattedReview = {
     id: updatedReview.id,
