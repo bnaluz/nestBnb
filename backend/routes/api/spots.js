@@ -147,25 +147,6 @@ router.get('/', async (req, res) => {
     order: [['id', 'ASC']],
   });
 
-  //needed sequelize.literal to include pagination controls from query, would error out with sequelize fn
-
-  // const createdAndUpdatedFormatter = (date) => {
-  //   const under10Formatter = (num) => {
-  //     if (num < 10) {
-  //       return '0' + num;
-  //     } else return num;
-  //   };
-
-  //   const year = date.getFullYear();
-  //   const month = under10Formatter(date.getMonth());
-  //   const day = under10Formatter(date.getDate());
-  //   const hours = under10Formatter(date.getHours());
-  //   const min = under10Formatter(date.getMinutes());
-  //   const sec = under10Formatter(date.getSeconds());
-
-  //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  // };
-
   const formattedSpots = spots.map((spot) => {
     //using sequelize get to pojo from res data
     const spotData = spot.get({ plain: true });
@@ -229,23 +210,6 @@ router.get('/current', requireAuth, async (req, res) => {
     },
     group: ['Spot.id'],
   });
-
-  // const createdAndUpdatedFormatter = (date) => {
-  //   const under10Formatter = (num) => {
-  //     if (num < 10) {
-  //       return '0' + num;
-  //     } else return num;
-  //   };
-
-  //   const year = date.getFullYear();
-  //   const month = under10Formatter(date.getMonth());
-  //   const day = under10Formatter(date.getDate());
-  //   const hours = under10Formatter(date.getHours());
-  //   const min = under10Formatter(date.getMinutes());
-  //   const sec = under10Formatter(date.getSeconds());
-
-  //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  // };
 
   const formattedSpots = userSpots.map((spot) => {
     const spotData = spot.get({ plain: true });
@@ -311,23 +275,6 @@ router.get('/:spotId', async (req, res) => {
     ],
     group: ['Spot.id', 'SpotImages.id', 'User.id', 'Reviews.id'],
   });
-
-  // const createdAndUpdatedFormatter = (date) => {
-  //   const under10Formatter = (num) => {
-  //     if (num < 10) {
-  //       return '0' + num;
-  //     } else return num;
-  //   };
-
-  //   const year = date.getFullYear();
-  //   const month = under10Formatter(date.getMonth());
-  //   const day = under10Formatter(date.getDate());
-  //   const hours = under10Formatter(date.getHours());
-  //   const min = under10Formatter(date.getMinutes());
-  //   const sec = under10Formatter(date.getSeconds());
-
-  //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  // };
 
   if (spot) {
     const spotData = spot.get({ plain: true });
@@ -403,23 +350,6 @@ router.post('/', requireAuth, async (req, res, next) => {
       price: price,
       owner_id: owner_id,
     });
-
-    // const createdAndUpdatedFormatter = (date) => {
-    //   const under10Formatter = (num) => {
-    //     if (num < 10) {
-    //       return '0' + num;
-    //     } else return num;
-    //   };
-
-    //   const year = date.getFullYear();
-    //   const month = under10Formatter(date.getMonth());
-    //   const day = under10Formatter(date.getDate());
-    //   const hours = under10Formatter(date.getHours());
-    //   const min = under10Formatter(date.getMinutes());
-    //   const sec = under10Formatter(date.getSeconds());
-
-    //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-    // };
 
     const formattedNewSpot = {
       id: newSpot.id,
@@ -518,23 +448,6 @@ router.put('/:spotId', requireAuth, async (req, res, next) => {
       owner_id: owner_id,
     });
 
-    // const createdAndUpdatedFormatter = (date) => {
-    //   const under10Formatter = (num) => {
-    //     if (num < 10) {
-    //       return '0' + num;
-    //     } else return num;
-    //   };
-
-    //   const year = date.getFullYear();
-    //   const month = under10Formatter(date.getMonth());
-    //   const day = under10Formatter(date.getDate());
-    //   const hours = under10Formatter(date.getHours());
-    //   const min = under10Formatter(date.getMinutes());
-    //   const sec = under10Formatter(date.getSeconds());
-
-    //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-    // };
-
     const formattedUpdatedSpot = {
       id: updatedSpot.id,
       ownerId: updatedSpot.owner_id,
@@ -603,23 +516,6 @@ router.get('/:spotId/reviews', async (req, res, next) => {
       ],
     });
 
-    // const createdAndUpdatedFormatter = (date) => {
-    //   const under10Formatter = (num) => {
-    //     if (num < 10) {
-    //       return '0' + num;
-    //     } else return num;
-    //   };
-
-    //   const year = date.getFullYear();
-    //   const month = under10Formatter(date.getMonth());
-    //   const day = under10Formatter(date.getDate());
-    //   const hours = under10Formatter(date.getHours());
-    //   const min = under10Formatter(date.getMinutes());
-    //   const sec = under10Formatter(date.getSeconds());
-
-    //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-    // };
-
     const formattedReviews = spotReviews.map((review) => ({
       id: review.id,
       userId: review.User.id,
@@ -684,23 +580,6 @@ router.post('/:spotId/reviews', requireAuth, async (req, res) => {
     stars: stars,
   });
 
-  // const createdAndUpdatedFormatter = (date) => {
-  //   const under10Formatter = (num) => {
-  //     if (num < 10) {
-  //       return '0' + num;
-  //     } else return num;
-  //   };
-
-  //   const year = date.getFullYear();
-  //   const month = under10Formatter(date.getMonth());
-  //   const day = under10Formatter(date.getDate());
-  //   const hours = under10Formatter(date.getHours());
-  //   const min = under10Formatter(date.getMinutes());
-  //   const sec = under10Formatter(date.getSeconds());
-
-  //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  // };
-
   const formattedReview = {
     id: newReview.id,
     userId: newReview.user_Id,
@@ -727,28 +606,6 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
   if (spot === null) {
     return res.status(404).json({ message: "Spot couldn't be found" });
   }
-
-  //use date formatters from booking then map through results
-  // const startAndEndDateFormatter = (date) => {
-  //   return date.toISOString().split('T')[0];
-  // };
-
-  // const createdAndUpdatedFormatter = (date) => {
-  //   const under10Formatter = (num) => {
-  //     if (num < 10) {
-  //       return '0' + num;
-  //     } else return num;
-  //   };
-
-  //   const year = date.getFullYear();
-  //   const month = under10Formatter(date.getMonth());
-  //   const day = under10Formatter(date.getDate());
-  //   const hours = under10Formatter(date.getHours());
-  //   const min = under10Formatter(date.getMinutes());
-  //   const sec = under10Formatter(date.getSeconds());
-
-  //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  // };
 
   //case for either spot owner or other
   if (spot.owner_id === Number(userId)) {
@@ -874,30 +731,8 @@ router.post('/:spotId/bookings', requireAuth, async (req, res) => {
     end_date: endDate,
   });
 
-  //booking is created but response needs formatting for dates
-  // const startAndEndDateFormatter = (date) => {
-  //   return date.toISOString().split('T')[0];
-  // };
-
   const formattedStart = startAndEndDateFormatter(newBooking.start_date);
   const formattedEnd = startAndEndDateFormatter(newBooking.end_date);
-
-  // const createdAndUpdatedFormatter = (date) => {
-  //   const under10Formatter = (num) => {
-  //     if (num < 10) {
-  //       return '0' + num;
-  //     } else return num;
-  //   };
-
-  //   const year = date.getFullYear();
-  //   const month = under10Formatter(date.getMonth());
-  //   const day = under10Formatter(date.getDate());
-  //   const hours = under10Formatter(date.getHours());
-  //   const min = under10Formatter(date.getMinutes());
-  //   const sec = under10Formatter(date.getSeconds());
-
-  //   return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  // };
 
   const formattedCreated = createdAndUpdatedFormatter(newBooking.createdAt);
   const formattedUpdated = createdAndUpdatedFormatter(newBooking.updatedAt);
