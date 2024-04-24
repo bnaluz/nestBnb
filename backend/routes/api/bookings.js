@@ -3,32 +3,15 @@ const router = express.Router();
 
 const { Booking, User, Spot } = require('../../db/models');
 const { requireAuth } = require('../../utils/auth');
+const {
+  createdAndUpdatedFormatter,
+  startAndEndDateFormatter,
+} = require('../../utils/formatters');
 const { Op } = require('sequelize');
 
 //*GET CURRENT USER BOOKING
 router.get('/current', requireAuth, async (req, res) => {
   const userId = req.user.id;
-
-  const startAndEndDateFormatter = (date) => {
-    return date.toISOString().split('T')[0];
-  };
-
-  const createdAndUpdatedFormatter = (date) => {
-    const under10Formatter = (num) => {
-      if (num < 10) {
-        return '0' + num;
-      } else return num;
-    };
-
-    const year = date.getFullYear();
-    const month = under10Formatter(date.getMonth());
-    const day = under10Formatter(date.getDate());
-    const hours = under10Formatter(date.getHours());
-    const min = under10Formatter(date.getMinutes());
-    const sec = under10Formatter(date.getSeconds());
-
-    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  };
 
   const usersBookings = await Booking.findAll({
     where: {
@@ -169,47 +152,14 @@ router.put('/:bookingId', requireAuth, async (req, res) => {
     });
   }
 
-  //previous error handling, adjusted to above to reflect only which error date is needed
-  // if (conflictingBookings.length > 0) {
-  //   return res.status(403).json({
-  //     message: 'Sorry, this spot is already booked for the specified dates',
-  //     errors: {
-  //       startDate: 'Start date conflicts with an existing booking',
-  //       endDate: 'End date conflicts with an existing booking',
-  //     },
-  //   });
-  // }
-
   //if it makes it here edit the booking
   const updatedBooking = await bookingToBeUpdated.update({
     start_date: start,
     end_date: end,
   });
 
-  //finally format the updatedBooking to match expected json res
-  const startAndEndDateFormatter = (date) => {
-    return date.toISOString().split('T')[0];
-  };
-
   const formattedStart = startAndEndDateFormatter(updatedBooking.start_date);
   const formattedEnd = startAndEndDateFormatter(updatedBooking.end_date);
-
-  const createdAndUpdatedFormatter = (date) => {
-    const under10Formatter = (num) => {
-      if (num < 10) {
-        return '0' + num;
-      } else return num;
-    };
-
-    const year = date.getFullYear();
-    const month = under10Formatter(date.getMonth());
-    const day = under10Formatter(date.getDate());
-    const hours = under10Formatter(date.getHours());
-    const min = under10Formatter(date.getMinutes());
-    const sec = under10Formatter(date.getSeconds());
-
-    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
-  };
 
   const formattedCreated = createdAndUpdatedFormatter(updatedBooking.createdAt);
   const formattedUpdated = createdAndUpdatedFormatter(updatedBooking.updatedAt);
