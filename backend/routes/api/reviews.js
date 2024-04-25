@@ -80,14 +80,14 @@ router.post('/:reviewId/images', requireAuth, async (req, res) => {
       },
     ],
   });
+  //if review doesnt exist
+  if (reviewToAddImage === null) {
+    return res.status(404).json({ message: "Review couldn't be found" });
+  }
 
   //only the review owner can add images
   if (reviewToAddImage.user_Id !== userId) {
     return res.status(403).json({ message: 'Cannot edit other user reviews' });
-  }
-  //if review doesnt exist
-  if (reviewToAddImage === null) {
-    return res.status(404).json({ message: "Review couldn't be found" });
   }
 
   //if there are already 10 images on the review
