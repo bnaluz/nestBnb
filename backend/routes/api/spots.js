@@ -660,8 +660,8 @@ router.get('/:spotId/bookings', requireAuth, async (req, res) => {
     });
     const formattedBookings = bookings.map((booking) => ({
       spotId: booking.spot_Id,
-      startDate: booking.start_date,
-      endDate: booking.end_date,
+      startDate: startAndEndDateFormatter(booking.start_date),
+      endDate: startAndEndDateFormatter(booking.end_date),
     }));
 
     return res.status(200).json({ Bookings: formattedBookings });
