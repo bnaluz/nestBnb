@@ -22,7 +22,7 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
   //find the image
   const spotImage = await SpotImage.findByPk(spotImageId);
   if (spotImage === null) {
-    return res.status(400).json({ message: "Spot image couldn't be found" });
+    return res.status(404).json({ message: "Spot image couldn't be found" });
   }
 
   //find the spot
@@ -33,6 +33,11 @@ router.delete('/:imageId', requireAuth, async (req, res) => {
       .status(403)
       .json({ message: "Cannot delete other user's images" });
   } else {
+    if (spotImage.url === spot.preview_image) {
+      await spot.update({
+        preview_image: 'Default Url',
+      });
+    }
     spotImage.destroy();
     return res.status(200).json({ message: 'Successfully deleted' });
   }
