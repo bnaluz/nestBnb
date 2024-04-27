@@ -573,24 +573,38 @@ router.post('/:spotId/reviews', requireAuth, async (req, res) => {
       .json({ message: 'User already has a review for this spot' });
   }
 
-  const newReview = await Review.create({
-    user_Id: userId,
-    spot_Id: spotId,
-    review: review,
-    stars: stars,
-  });
+  try {
+    const newReview = await Review.create({
+      user_Id: userId,
+      spot_Id: spotId,
+      review: review,
+      stars: stars,
+    });
 
-  const formattedReview = {
-    id: newReview.id,
-    userId: newReview.user_Id,
-    spotId: newReview.spot_Id,
-    review: newReview.review,
-    stars: newReview.stars,
-    createdAt: createdAndUpdatedFormatter(newReview.createdAt),
-    updatedAt: createdAndUpdatedFormatter(newReview.updatedAt),
-  };
+    const formattedReview = {
+      id: newReview.id,
+      userId: newReview.user_Id,
+      spotId: newReview.spot_Id,
+      review: newReview.review,
+      stars: newReview.stars,
+      createdAt: createdAndUpdatedFormatter(newReview.createdAt),
+      updatedAt: createdAndUpdatedFormatter(newReview.updatedAt),
+    };
 
-  return res.status(200).json(formattedReview);
+    return res.status(201).json(formattedReview);
+  } catch (error) {
+    // console.log(error);
+    const errors = {};
+
+    error.errors.forEach((e) => {
+      errors[e.path] = e.message;
+    });
+
+    return res.status(400).json({
+      message: 'Validation Error',
+      errors: errors,
+    });
+  }
 });
 
 //*GET ALL BOOKINGS FOR A SPOTID
