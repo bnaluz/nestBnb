@@ -31,7 +31,9 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         validate: {
           notNull: true,
-          notEmpty: true,
+          notEmpty: {
+            msg: 'Street address is required',
+          },
         },
       },
 
@@ -40,14 +42,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
-          notEmpty: true,
+          notEmpty: {
+            msg: 'City is required',
+          },
         },
       },
       state: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notNull: true,
+          notNull: {
+            msg: 'State is required',
+          },
+          notEmpty: {
+            msg: 'State is required',
+          },
         },
       },
       country: {
@@ -55,50 +64,90 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
-          notEmpty: true,
+          notEmpty: {
+            msg: 'Country is required',
+          },
         },
       },
       lat: {
         type: DataTypes.DECIMAL,
         allowNull: false,
         validate: {
-          notNull: true,
-          min: -90,
-          max: 90,
+          notNull: {
+            msg: 'Latitude is required',
+          },
+          notEmpty: {
+            msg: 'Latitude is required',
+          },
+          min: {
+            args: [-90],
+            msg: 'Latitude must be greater than or equal to -90',
+          },
+          max: {
+            args: [90],
+            msg: 'Latitude must be less than or equal to 90',
+          },
         },
       },
       lng: {
         type: DataTypes.DECIMAL,
         allowNull: false,
         validate: {
-          notNull: true,
-          min: -180,
-          max: 180,
+          notNull: {
+            msg: 'Longitude is required',
+          },
+          notEmpty: {
+            msg: 'Longitude is required',
+          },
+          min: {
+            args: [-180],
+            msg: 'Longitude must be greater than or equal to -180',
+          },
+          max: {
+            args: [180],
+            msg: 'Longitude must be less than or equal to 180',
+          },
         },
       },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notNull: true,
-          notEmpty: true,
-          len: [2, 50],
+          notNull: {
+            msg: 'Name is required',
+          },
+          notEmpty: {
+            msg: 'Name is required',
+          },
+          len: {
+            args: [2, 50],
+            msg: 'Name must be less than 50 characters',
+          },
         },
       },
       description: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notNull: true,
-          notEmpty: true,
+          notNull: {
+            msg: 'Description is required',
+          },
+          notEmpty: {
+            msg: 'Description is required',
+          },
         },
       },
       price: {
         type: DataTypes.FLOAT,
         allowNull: false,
         validate: {
-          notNull: true,
-          min: 0,
+          notNull: {
+            msg: 'Price per day is required',
+          },
+          min: {
+            args: [0],
+            msg: 'Price per day is required',
+          },
         },
       },
       preview_image: {
