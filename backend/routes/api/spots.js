@@ -22,30 +22,22 @@ router.get('/', async (req, res) => {
   //get the page and size from the query
   let page = req.query.page !== undefined ? parseInt(req.query.page, 10) : 1;
   let size = req.query.size !== undefined ? parseInt(req.query.size, 10) : 20;
-
+  //create a filter obj & error obj to handle case to either add filter query or throw a new error
+  let errors = {};
+  let filters = {};
   //check page and size values
   if (isNaN(page) || page < 1) {
-    return res.status(400).json({
-      message: 'Bad Request',
-      error: 'Page must be a number greater than or equal to 1',
-    });
+    errors.page = 'Page must be equal to or greater than 1';
   }
 
   if (isNaN(size) || size < 1 || size > 20) {
-    return res.status(400).json({
-      message: 'Bad Request',
-      error: 'Size must be between 1 and 20',
-    });
+    errors.size = 'Size must be between 1 and 20';
   }
 
   //get the rest of the query
   let { minLat, maxLat, minLng, maxLng, maxPrice, minPrice } = req.query;
-  //create a filter obj & error obj to handle case to either add filter query or throw a new error
-  let errors = {};
-  let filters = {};
 
   //validate the queries and add them as keys to the obj if they pass
-
   if (minLat !== undefined) {
     minLat = parseInt(minLat);
     if (!isNaN(minLat) && minLat >= -90 && minLat <= 90) {
