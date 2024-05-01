@@ -35,29 +35,58 @@ const validateSignUp = [
 
 //*sign up
 router.post('/', validateSignUp, async (req, res) => {
-  const { email, firstName, lastName, password, username } = req.body;
-  const hashedPassword = bcrypt.hashSync(password);
-  const user = await User.create({
-    email,
-    firstName,
-    lastName,
-    username,
-    password: hashedPassword,
-  });
+  try {
+    const { email, firstName, lastName, password, username } = req.body;
+    const hashedPassword = bcrypt.hashSync(password);
+    const user = await User.create({
+      email,
+      firstName,
+      lastName,
+      username,
+      password: hashedPassword,
+    });
 
-  const safeUser = {
-    id: user.id,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-  };
+    const safeUser = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+    };
 
-  await setTokenCookie(res, safeUser);
+    await setTokenCookie(res, safeUser);
 
-  return res.json({
-    user: safeUser,
-  });
+    return res.json({
+      user: safeUser,
+    });
+  } catch (error) {
+    // console.log(error);
+    const errors = {};
+    let status = 400;
+
+    if (
+      error.name === 'SequelizeUniqueConstraintError' ||
+      error.name === 'SequelizeValidationError'
+    ) {
+      error.errors.forEach((e) => {
+        if (e.type === 'unique violation') {
+          if (e.path === 'email' || e.path === 'username') {
+            (errors[e.path] = `User with that ${e.path} already exists`),
+              (status = 500);
+          }
+        } else if (e.type === 'notNull violation') {
+          errors[e.path] = `${e.path} is required`;
+        } else if (e.type === 'Validation error') {
+          errors[e.path] = e.message;
+        }
+      });
+    }
+
+    return res.status(status).json({
+      message: status === 500 ? 'User Already Exists' : 'Bad Request',
+      errors: errors,
+    });
+  }
 });
 
 module.exports = router;
