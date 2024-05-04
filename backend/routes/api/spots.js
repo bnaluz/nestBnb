@@ -251,6 +251,7 @@ router.get('/:spotId', async (req, res) => {
       'price',
       'createdAt',
       'updatedAt',
+      // 'preview_image',
       [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
       [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgStarRating'],
     ],
@@ -285,7 +286,7 @@ router.get('/:spotId', async (req, res) => {
       updatedAt: createdAndUpdatedFormatter(spotData.updatedAt),
       numReviews: numReviews,
       avgRating: avgRating,
-      previewImage: spotData.preview_image || 'defaultURL',
+      // previewImage: spotData.preview_image || 'defaultURL',
       SpotImages: spotData.SpotImages.map((img) => ({
         id: img.id,
         url: img.url,
