@@ -1,7 +1,7 @@
 import './Navigation.css';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import ProfileButton from './ProfileButton';
+import ProfileButton from './ProfileButton.jsx';
 import * as sessionActions from '../../store/session';
 
 const Navigation = ({ isLoaded }) => {
@@ -17,9 +17,6 @@ const Navigation = ({ isLoaded }) => {
     <>
       <li>
         <ProfileButton user={sessionUser} />
-      </li>
-      <li>
-        <button onClick={logout}>Log Out</button>
       </li>
     </>
   ) : (
