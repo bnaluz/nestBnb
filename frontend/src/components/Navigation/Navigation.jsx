@@ -2,16 +2,11 @@ import './Navigation.css';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import ProfileButton from './ProfileButton.jsx';
-import * as sessionActions from '../../store/session';
+import OpenModalButton from '../OpenModalButton/OpenModalButton.jsx';
+import LoginFormModal from '../LoginFormModal/LoginFormModal.jsx';
 
 const Navigation = ({ isLoaded }) => {
   const sessionUser = useSelector((state) => state.session.user);
-  const dispatch = useDispatch();
-
-  const logout = (e) => {
-    e.preventDefault();
-    dispatch(sessionActions.logout());
-  };
 
   const sessionLinks = sessionUser ? (
     <>
@@ -22,7 +17,10 @@ const Navigation = ({ isLoaded }) => {
   ) : (
     <>
       <li>
-        <NavLink to="/login">Log In</NavLink>
+        <OpenModalButton
+          buttonText={'Log In'}
+          modalComponent={<LoginFormModal />}
+        />
       </li>
       <li>
         <NavLink to="/signup">Sign Up</NavLink>
