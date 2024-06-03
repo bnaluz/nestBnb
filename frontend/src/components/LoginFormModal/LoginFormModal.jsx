@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import * as sessionActions from '../../store/session';
@@ -9,6 +9,7 @@ const LoginFormModal = () => {
 
   const [credential, setCredential] = useState('');
   const [password, setPassword] = useState('');
+  const [disabled, setDisabled] = useState(true);
   const { closeModal } = useModal();
 
   const [errors, setErrors] = useState({});
@@ -24,31 +25,38 @@ const LoginFormModal = () => {
       });
   };
 
+  useEffect(() => {
+    if (password.length >= 6 && credential.length >= 4) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [password, credential]);
+
   return (
-    <div>
-      <div>Log In</div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username
-          <input
-            className="input"
-            type="text"
-            value={credential}
-            onChange={(e) => setCredential(e.target.value)}
-            placeholder="Username or email"
-          ></input>
-        </label>
-        <label>
-          Password
-          <input
-            type="text"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-          ></input>
-        </label>
+    <div className="modal-container">
+      <div className="header">Log In</div>
+      <form className="modal-form" onSubmit={handleSubmit}>
+        <label className="label">Username</label>
+        <input
+          className="input"
+          type="text"
+          value={credential}
+          onChange={(e) => setCredential(e.target.value)}
+          placeholder="Username or email"
+        ></input>
+        <label className="label">Password</label>
+        <input
+          className="input"
+          type="text"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        ></input>
         {errors.credential && <p>{errors.credential}</p>}
-        <button type="submit">Log In</button>
+        <button className="submit-button" type="submit" disabled={disabled}>
+          Log In
+        </button>
       </form>
     </div>
   );
