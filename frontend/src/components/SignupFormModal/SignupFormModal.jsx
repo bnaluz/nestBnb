@@ -1,11 +1,11 @@
-import './SignupForm.css';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import * as sessionActions from '../../store/session';
+import { useModal } from '../../context/Modal';
+import './SignupForm.css';
 
-const SignupFormPage = () => {
-  const sessionUser = useSelector((state) => state.session.user);
+const SignupFormModal = () => {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState('');
@@ -15,6 +15,7 @@ const SignupFormPage = () => {
   const [password, setPassword] = useState('');
   const [confirmedPassword, setConfirmedPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const { closeModal } = useModal();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,22 +30,20 @@ const SignupFormPage = () => {
         confirmedPassword,
       };
 
-      return dispatch(sessionActions.signup(payload)).catch(async (res) => {
-        const data = await res.json();
-        if (data?.errors) {
-          setErrors(data.errors);
-        }
-      });
+      return dispatch(sessionActions.signup(payload))
+        .then(closeModal)
+        .catch(async (res) => {
+          const data = await res.json();
+          if (data?.errors) {
+            setErrors(data.errors);
+          }
+        });
     }
     return setErrors({
       confirmPassword:
         'Confirm Password field must be the same as the Password field',
     });
   };
-
-  if (sessionUser) {
-    return <Navigate to="/" replace={true} />;
-  }
 
   return (
     <div>
@@ -59,6 +58,7 @@ const SignupFormPage = () => {
               value={username}
             ></input>
           </label>
+          {errors.username && <p>{errors.username}</p>}
           <label>
             First Name
             <input
@@ -67,6 +67,7 @@ const SignupFormPage = () => {
               value={firstName}
             ></input>
           </label>
+          {errors.firstName && <p>{errors.firstName}</p>}
           <label>
             Last Name
             <input
@@ -75,6 +76,7 @@ const SignupFormPage = () => {
               value={lastName}
             ></input>
           </label>
+          {errors.lastName && <p>{errors.lastName}</p>}
           <label>
             Email
             <input
@@ -83,6 +85,7 @@ const SignupFormPage = () => {
               value={email}
             ></input>
           </label>
+          {errors.email && <p>{errors.email}</p>}
           <label>
             Password
             <input
@@ -91,6 +94,7 @@ const SignupFormPage = () => {
               value={password}
             ></input>
           </label>
+          {errors.password && <p>{errors.password}</p>}
           <label>
             Confirm Password
             <input
@@ -99,6 +103,7 @@ const SignupFormPage = () => {
               value={confirmedPassword}
             ></input>
           </label>
+          {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
           <button type="submit">Submit</button>
         </form>
       </div>
@@ -106,4 +111,4 @@ const SignupFormPage = () => {
   );
 };
 
-export default SignupFormPage;
+export default SignupFormModal;
