@@ -44,7 +44,7 @@ function ProfileButton({ user }) {
   return (
     <>
       <button onClick={toggleMenu}>
-        <FaRegCircleUser />
+        <FaRegCircleUser size={30} />
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
