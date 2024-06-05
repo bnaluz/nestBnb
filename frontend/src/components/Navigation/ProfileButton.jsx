@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { FaRegCircleUser } from 'react-icons/fa6';
+import { CiUser } from 'react-icons/ci';
+
 import * as sessionActions from '../../store/session';
 import OpenModalButton from '../OpenModalButton/OpenModalButton';
 import LoginFormModal from '../LoginFormModal/LoginFormModal';
@@ -13,7 +14,7 @@ function ProfileButton({ user }) {
   const ulRef = useRef();
 
   const toggleMenu = (e) => {
-    e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
+    e.stopPropagation();
     setShowMenu(!showMenu);
   };
 
@@ -43,8 +44,8 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button onClick={toggleMenu}>
-        <FaRegCircleUser size={30} />
+      <button className="profile-icon" onClick={toggleMenu}>
+        <CiUser size={30} />
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
