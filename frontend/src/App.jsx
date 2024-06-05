@@ -1,12 +1,13 @@
 //*packages
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 //*components
 import Navigation from './components/Navigation/Navigation';
 import * as sessionActions from './store/session';
 import { getSpots } from './store/spots';
 import Splash from './pages/Splash/Splash';
+import SpotDetailPage from './pages/SpotDetailPage/SpotDetailPage';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,15 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Splash />,
+      },
+      {
+        path: '/spots',
+        children: [
+          {
+            path: ':spotId',
+            element: <SpotDetailPage />,
+          },
+        ],
       },
     ],
   },

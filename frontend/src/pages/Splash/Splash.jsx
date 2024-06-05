@@ -8,16 +8,14 @@ const Splash = () => {
   return (
     <div className="container">
       {Object.values(spots).map((spot) => (
-        <div>
-          <SpotCard
-            key={spot.id}
-            price={spot.price}
-            city={spot.city}
-            state={spot.state}
-            avgRating={spot.avgRating}
-            previewImage={spot.previewImage}
-          />
-        </div>
+        <SpotCard
+          key={spot.id}
+          price={spot.price}
+          city={spot.city}
+          state={spot.state}
+          avgRating={spot.avgRating}
+          previewImage={spot.previewImage}
+        />
       ))}
     </div>
   );
