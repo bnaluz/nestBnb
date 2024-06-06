@@ -37,14 +37,14 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Splash />,
-      },
-      {
-        path: '/spots',
         children: [
           {
-            path: ':spotId',
-            element: <SpotDetailPage />,
+            index: true,
+            element: <Splash />,
+          },
+          {
+            path: 'spots',
+            children: [{ path: ':spotId', element: <SpotDetailPage /> }],
           },
         ],
       },

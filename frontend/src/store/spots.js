@@ -33,7 +33,6 @@ export const getSpotDetail = (spotId) => async (dispatch) => {
 
   const spotDetail = await response.json();
   dispatch(spotDetails(spotDetail));
-  return spotDetail;
 };
 
 //*INITIAL STATE && REDUCER
@@ -53,7 +52,7 @@ const spotsReducer = (state = initialState, action) => {
       };
     }
     case GET_DETAIL: {
-      const spot = action.spotDetail;
+      const spot = action.spotDetails;
       return { ...state, currentSpot: spot };
     }
     default:
