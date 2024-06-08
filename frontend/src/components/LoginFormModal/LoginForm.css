@@ -48,3 +48,11 @@
   background-color: #ebebe4;
   color: gray;
 }
+
+.demo-button {
+  width: 150px;
+  display: flex;
+  margin: auto;
+  margin-top: 10px;
+  padding: 5px;
+}

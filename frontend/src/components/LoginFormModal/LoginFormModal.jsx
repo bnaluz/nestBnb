@@ -33,6 +33,19 @@ const LoginFormModal = () => {
     }
   }, [password, credential]);
 
+  const loginDemo = (e) => {
+    e.preventDefault();
+
+    return dispatch(
+      sessionActions.login({ credential: 'Demo-lition', password: 'password' })
+    )
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data?.errors) setErrors(data.errors);
+      });
+  };
+
   return (
     <div className="modal-container">
       <div className="header">Log In</div>
@@ -58,6 +71,9 @@ const LoginFormModal = () => {
           Log In
         </button>
       </form>
+      <button className="demo-button" onClick={loginDemo}>
+        Log In as Demo User
+      </button>
     </div>
   );
 };

@@ -1,0 +1,50 @@
+.modal-container {
+  width: 450px;
+  background-color: burlywood;
+  height: auto;
+  padding-bottom: 15px;
+  border-radius: 9px;
+}
+
+.header {
+  height: 30px;
+  width: fit-content;
+  display: flex;
+  margin: auto;
+  padding-top: 10px;
+  font-size: larger;
+  font-weight: bold;
+}
+
+.modal-form {
+  display: flex;
+  width: 75%;
+  flex-direction: column;
+  margin: auto;
+}
+
+.input {
+  height: 25px;
+  border-radius: 5px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: medium;
+}
+
+.label {
+  padding-top: 2px;
+  font-size: large;
+}
+
+.submit-button {
+  padding: 6px;
+  border-radius: 4px;
+  background-color: #6b8e23;
+  color: white;
+  margin-top: 4px;
+}
+
+:disabled {
+  background-color: #ebebe4;
+  color: gray;
+}
