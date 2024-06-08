@@ -11,7 +11,7 @@ const SpotCard = ({ avgRating, city, previewImage, price, state }) => {
           <p>
             {city}, {state}
           </p>
-          <p>{avgRating}</p>
+          {avgRating === null ? <p>NEW</p> : <p>{avgRating}</p>}
         </div>
         <div>$ {price}/night</div>
       </div>

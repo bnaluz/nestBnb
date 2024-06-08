@@ -14,7 +14,13 @@ const Splash = () => {
   return (
     <div className="container">
       {Object.values(spots).map((spot) => (
-        <div key={spot.id} onClick={() => handleSpotRouter(spot.id)}>
+        <div
+          className="tooltip"
+          key={spot.id}
+          onClick={() => handleSpotRouter(spot.id)}
+        >
+          <span className="tooltip-text">{spot.name}</span>
+
           <SpotCard
             onClick={handleSpotRouter}
             key={spot.id}
