@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getSpotDetail } from '../../store/spots';
+import { getReviews } from '../../store/reviews';
 import { useEffect } from 'react';
 
 const SpotDetailPage = () => {
@@ -15,6 +16,7 @@ const SpotDetailPage = () => {
 
   useEffect(() => {
     dispatch(getSpotDetail(spotId.spotId));
+    dispatch(getReviews(spotId.spotId));
   }, [dispatch, spotId]);
 
   console.log('SpotDetailPage');
