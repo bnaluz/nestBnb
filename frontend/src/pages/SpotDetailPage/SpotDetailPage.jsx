@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { getSpotDetail } from '../../store/spots';
 import { getReviews } from '../../store/reviews';
 import { useEffect } from 'react';
+import './SpotDetailPage.css';
 
 const SpotDetailPage = () => {
   const spotId = useParams();
@@ -23,7 +24,11 @@ const SpotDetailPage = () => {
   return (
     <div className="test">
       <div>{spot.name}</div>
-      <div>{spot.address}</div>
+      <div>
+        {spot.city}, {spot.state}, {spot.country}
+      </div>
+      <div>FOR SPOT IMAGES</div>
+      <div>For SPOT OWNER INFO OWNER ID as ownerId: {spot.ownerId}</div>
     </div>
   );
 };
