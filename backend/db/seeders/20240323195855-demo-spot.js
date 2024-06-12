@@ -32,7 +32,8 @@ module.exports = {
         name: 'Nest1 Home',
         description: 'The first nest',
         price: 199.99,
-        preview_image: '',
+        preview_image:
+          'https://images.unsplash.com/photo-1544984243-ec57ea16fe25?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       },
       {
         owner_id: 2,
@@ -43,9 +44,10 @@ module.exports = {
         lat: 45.7645358,
         lng: -125.4730327,
         name: 'Nest2 Home',
-        description: 'The first nest',
+        description: 'The second nest',
         price: 249.99,
-        preview_image: '',
+        preview_image:
+          'https://plus.unsplash.com/premium_photo-1661964014750-963a28aeddea?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       },
       {
         owner_id: 3,
@@ -56,9 +58,10 @@ module.exports = {
         lat: 50.7645358,
         lng: -130.4730327,
         name: 'Nest3 Home',
-        description: 'The first nest',
+        description: 'The third nest',
         price: 299.99,
-        preview_image: '',
+        preview_image:
+          'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       },
     ]);
   },
