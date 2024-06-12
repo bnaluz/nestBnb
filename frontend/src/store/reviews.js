@@ -1,5 +1,4 @@
 import { csrfFetch } from './csrf';
-import spotsReducer from './spots';
 
 //*VARIABLE TYPES
 const GET_SPOT_REVIEWS = 'reviews/GET';
@@ -18,15 +17,17 @@ export const getReviews = (spotId) => async (dispatch) => {
 
   const reviews = await response.json();
   dispatch(getSpotReviews(reviews));
+  return reviews;
 };
 
-const initialState = { reviews: [] };
+const initialState = { reviews: {} };
 
 const reviewsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_SPOT_REVIEWS: {
       return {
-        reviews: { ...action.reviews },
+        ...state,
+        reviews: action.reviews,
       };
     }
     default:

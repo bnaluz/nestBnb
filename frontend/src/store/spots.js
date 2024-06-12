@@ -55,6 +55,7 @@ const spotsReducer = (state = initialState, action) => {
       const spot = action.spotDetails;
       return { ...state, currentSpot: spot };
     }
+
     default:
       return state;
   }
