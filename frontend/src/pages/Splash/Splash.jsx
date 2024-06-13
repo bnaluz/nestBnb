@@ -12,7 +12,7 @@ const Splash = () => {
   };
 
   return (
-    <div className="container">
+    <div className="splash-container">
       {Object.values(spots).map((spot) => (
         <div
           className="tooltip"

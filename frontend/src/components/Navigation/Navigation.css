@@ -6,6 +6,7 @@
   justify-content: space-between;
   background-color: #6b8e23;
   border-radius: 0 0 3px 3px;
+  z-index: 999;
 }
 
 img {
@@ -21,4 +22,18 @@ img {
   align-items: center;
   margin-right: 20px;
   cursor: pointer;
+  padding-left: 10px;
+}
+
+.logged-in {
+  display: flex;
+
+  align-items: center;
+}
+
+.create {
+  padding-right: 15px;
+  text-align: center;
+  cursor: pointer;
+  color: white;
 }
