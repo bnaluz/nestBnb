@@ -71,43 +71,43 @@ module.exports = (sequelize, DataTypes) => {
       },
       lat: {
         type: DataTypes.DECIMAL,
-        allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'Latitude is required',
-          },
-          notEmpty: {
-            msg: 'Latitude is required',
-          },
-          min: {
-            args: [-90],
-            msg: 'Latitude must be greater than or equal to -90',
-          },
-          max: {
-            args: [90],
-            msg: 'Latitude must be less than or equal to 90',
-          },
-        },
+        allowNull: true,
+        // validate: {
+        //   notNull: {
+        //     msg: 'Latitude is required',
+        //   },
+        //   notEmpty: {
+        //     msg: 'Latitude is required',
+        //   },
+        //   min: {
+        //     args: [-90],
+        //     msg: 'Latitude must be greater than or equal to -90',
+        //   },
+        //   max: {
+        //     args: [90],
+        //     msg: 'Latitude must be less than or equal to 90',
+        //   },
+        // },
       },
       lng: {
         type: DataTypes.DECIMAL,
-        allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'Longitude is required',
-          },
-          notEmpty: {
-            msg: 'Longitude is required',
-          },
-          min: {
-            args: [-180],
-            msg: 'Longitude must be greater than or equal to -180',
-          },
-          max: {
-            args: [180],
-            msg: 'Longitude must be less than or equal to 180',
-          },
-        },
+        allowNull: true,
+        // validate: {
+        //   notNull: {
+        //     msg: 'Longitude is required',
+        //   },
+        //   notEmpty: {
+        //     msg: 'Longitude is required',
+        //   },
+        //   min: {
+        //     args: [-180],
+        //     msg: 'Longitude must be greater than or equal to -180',
+        //   },
+        //   max: {
+        //     args: [180],
+        //     msg: 'Longitude must be less than or equal to 180',
+        //   },
+        // },
       },
       name: {
         type: DataTypes.STRING,
@@ -121,7 +121,7 @@ module.exports = (sequelize, DataTypes) => {
           },
           len: {
             args: [2, 50],
-            msg: 'Name must be less than 50 characters',
+            msg: 'Name is required and must be less than 50 characters',
           },
         },
       },
@@ -145,13 +145,22 @@ module.exports = (sequelize, DataTypes) => {
             msg: 'Price per day is required',
           },
           min: {
-            args: [0],
+            args: [1],
             msg: 'Price per day is required',
           },
         },
       },
       preview_image: {
         type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'Preview image is required',
+          },
+          notEmpty: {
+            msg: 'Preview image is required',
+          },
+        },
       },
     },
     {
