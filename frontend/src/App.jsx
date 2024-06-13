@@ -8,6 +8,8 @@ import * as sessionActions from './store/session';
 import { getSpots } from './store/spots';
 import Splash from './pages/Splash/Splash';
 import SpotDetailPage from './pages/SpotDetailPage/SpotDetailPage';
+import { Modal } from './context/Modal';
+import CreateSpotPage from './pages/CreateSpotFormPage/CreateSpotPage';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -27,6 +29,7 @@ const Layout = () => {
     <>
       <Navigation isLoaded={isLoaded} />
       {isLoaded && <Outlet />}
+      <Modal />
     </>
   );
 };
@@ -44,7 +47,10 @@ const router = createBrowserRouter([
           },
           {
             path: 'spots',
-            children: [{ path: ':spotId', element: <SpotDetailPage /> }],
+            children: [
+              { path: ':spotId', element: <SpotDetailPage /> },
+              { path: 'create', element: <CreateSpotPage /> },
+            ],
           },
         ],
       },

@@ -1,0 +1,95 @@
+.create-container {
+  width: 100%;
+  padding-top: 120px;
+  margin: auto;
+  background-color: blanchedalmond;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-start {
+  width: 700px;
+  margin: auto;
+  height: auto;
+  padding-top: 15px;
+  padding-bottom: 60px;
+}
+
+.form-header {
+  width: 100%;
+  margin: auto;
+
+  font-size: xx-large;
+}
+
+.tag-line {
+  padding-top: 10px;
+  font-size: large;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+.large-text {
+  font-size: x-large;
+  padding-bottom: 8px;
+  margin-top: 5px;
+}
+
+.data-entry {
+  width: 100%;
+  margin: auto;
+}
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  margin-top: 5px;
+  max-width: 500px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.neighbors {
+  display: flex;
+  max-width: 400px;
+  align-items: baseline;
+}
+
+.neighbors input {
+  margin-right: 4px;
+  margin-top: 3px;
+  margin-bottom: 2px;
+}
+
+.stacked-label-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.description-entry {
+  padding-bottom: 10px;
+}
+
+textarea {
+  width: 90%;
+  margin: auto;
+  height: 200px;
+}
+
+.create-button {
+  width: 200px;
+  margin: auto;
+  padding-top: 15px;
+}
+
+button {
+  padding: 10px;
+}
+
+.error-message {
+  color: red;
+}

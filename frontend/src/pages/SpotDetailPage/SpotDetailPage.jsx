@@ -11,7 +11,6 @@ import ReviewsBox from '../../components/SpotPageComponents/ReviewsBox';
 
 const SpotDetailPage = () => {
   const spotId = useParams();
-  console.log(spotId);
 
   const spot = useSelector((state) => state.spots.currentSpot);
   const reviews = useSelector((state) => state.reviews.reviews);
@@ -49,7 +48,7 @@ const SpotDetailPage = () => {
       </div>
 
       <div className="info-box">
-        <div>
+        <div className="owner-description">
           <h2>
             Hosted By: {spot.Owner.firstName}, {spot.Owner.lastName}{' '}
           </h2>

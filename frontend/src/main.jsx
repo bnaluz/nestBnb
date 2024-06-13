@@ -27,7 +27,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ModalProvider>
       <Provider store={store}>
         <App />
-        <Modal />
       </Provider>
     </ModalProvider>
   </React.StrictMode>
