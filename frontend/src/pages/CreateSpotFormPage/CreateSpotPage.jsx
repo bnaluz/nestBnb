@@ -93,7 +93,7 @@ const CreateSpotPage = () => {
       <div className="form-start">
         <div className="form-header">CREATE A NEW NEST</div>
         <div className="tag-line">
-          <span className="large-text">Where's your place located?</span>
+          <span className="large-text">{`Where's your place located?`}</span>
           Guests will only get your exact address once they booked a
           reservation.
         </div>
@@ -160,8 +160,8 @@ const CreateSpotPage = () => {
             )}
             <div className="large-text">Create a title for your spot</div>
             <div>
-              Catch guest's attention with a spot title that highlights what
-              makes your place special
+              {`Catch guest's attention with a spot title that highlights what
+              makes your place special`}
             </div>
             <input
               type="text"
