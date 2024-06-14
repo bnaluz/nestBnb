@@ -1,28 +1,27 @@
+import { useSelector } from 'react-redux';
 import './SpotPageCalloutBox.css';
 import { FaStar } from 'react-icons/fa6';
 
-const SpotPageCalloutBox = ({ price, avgRatings, reviewCount }) => {
+const SpotPageCalloutBox = () => {
+  const spot = useSelector((state) => state.spots.currentSpot);
+  console.log(spot);
+
   const handleAlert = (e) => {
     e.preventDefault();
     alert('Feature coming soon');
   };
 
-  if (avgRatings === null) {
-    avgRatings = 'NEW';
-  } else {
-    avgRatings = avgRatings.toFixed(1);
-  }
   return (
     <div className="callout-container">
       <div>
         <div className="info-line">
-          <div className="price">${price}/night </div>
+          <div className="price">{`${spot.price}/night`} </div>
           <div className="rating-reviews">
             <div>
               <FaStar size={15} />
-              {avgRatings}
+              {spot.avgRating === null ? 'NEW' : `${spot.avgRating.toFixed(2)}`}
             </div>
-            <div>{reviewCount} reviews</div>
+            <div>{`${spot.numReviews}`} reviews</div>
           </div>
         </div>
       </div>

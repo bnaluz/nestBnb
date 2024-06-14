@@ -23,10 +23,7 @@ const SpotDetailPage = () => {
 
   useEffect(() => {
     dispatch(getSpotDetail(spotId.spotId));
-    dispatch(getReviews(spotId.spotId));
-    setTimeout(() => {
-      setIsLoaded(true);
-    }, 300);
+    dispatch(getReviews(spotId.spotId)).then(() => setIsLoaded(true));
   }, [dispatch, spotId]);
 
   return isLoaded ? (
@@ -37,11 +34,12 @@ const SpotDetailPage = () => {
       </h3>
 
       <div className="image-container">
-        {spot.SpotImages.slice(0, 5).map((image, index) => (
-          <div
-            key={image.id}
-            className={`image ${index === 0 ? 'large' : 'small'}`}
-          >
+        <div className="image large">
+          <img src={spot.previewImage} alt="" />
+        </div>
+
+        {spot.SpotImages.slice(0, 4).map((image) => (
+          <div key={image.id} className="image small">
             <img src={image.url} alt="" />
           </div>
         ))}

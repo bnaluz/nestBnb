@@ -11,7 +11,13 @@ const SpotCard = ({ avgRating, city, previewImage, price, state }) => {
           <p>
             {city}, {state}
           </p>
-          {avgRating === null ? <p>NEW</p> : <p>{avgRating}</p>}
+          {avgRating === null ? (
+            <p>NEW</p>
+          ) : (
+            <p>
+              {Number.isInteger(avgRating) ? avgRating : avgRating.toFixed(2)}
+            </p>
+          )}
         </div>
         <div>$ {price}/night</div>
       </div>
