@@ -318,6 +318,7 @@ router.post('/', requireAuth, async (req, res, next) => {
       name,
       description,
       price,
+      preview_image,
     } = req.body;
 
     const newSpot = await Spot.create({
@@ -331,6 +332,7 @@ router.post('/', requireAuth, async (req, res, next) => {
       description: description,
       price: price,
       owner_id: owner_id,
+      preview_image: preview_image,
     });
 
     const formattedNewSpot = {
@@ -345,6 +347,7 @@ router.post('/', requireAuth, async (req, res, next) => {
       name: newSpot.name,
       description: newSpot.description,
       price: newSpot.price,
+      preview_image: newSpot.preview_image,
       createdAt: createdAndUpdatedFormatter(newSpot.createdAt),
       updatedAt: createdAndUpdatedFormatter(newSpot.updatedAt),
     };

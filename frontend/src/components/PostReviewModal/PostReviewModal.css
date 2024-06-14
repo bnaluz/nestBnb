@@ -1,0 +1,61 @@
+.post-review-modal-container {
+  border: 1px solid #ccc;
+  padding: 20px;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #f8f8f8;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-review-header {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.post-modal {
+  width: 100%;
+  margin: auto;
+}
+
+.post-modal textarea {
+  width: 100%;
+  margin: auto;
+  height: 100px;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.star {
+  font-size: 30px;
+  color: #ccc;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.star.filled {
+  color: gold;
+}
+
+.post-modal button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #6b8e23;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: gray;
+}

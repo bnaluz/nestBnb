@@ -1,3 +1,21 @@
 .hidden {
   display: none;
 }
+
+.profile-icon {
+  cursor: pointer;
+  border-radius: 40%;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: row;
+}
+
+.menu {
+  position: absolute;
+  border-radius: 0.75rem;
+  background-color: burlywood;
+  width: 10vw;
+  overflow: hidden;
+  right: 2rem;
+  top: 5rem;
+}
