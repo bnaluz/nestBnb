@@ -10,6 +10,7 @@ import Splash from './pages/Splash/Splash';
 import SpotDetailPage from './pages/SpotDetailPage/SpotDetailPage';
 import { Modal } from './context/Modal';
 import CreateSpotPage from './pages/CreateSpotFormPage/CreateSpotPage';
+import ManageSpotsPage from './pages/ManageSpotsPage/ManageSpotsPage';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
             children: [
               { path: ':spotId', element: <SpotDetailPage /> },
               { path: 'create', element: <CreateSpotPage /> },
+              { path: 'user-spots', element: <ManageSpotsPage /> },
             ],
           },
         ],

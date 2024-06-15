@@ -22,7 +22,6 @@ const Splash = () => {
           <span className="tooltip-text">{spot.name}</span>
 
           <SpotCard
-            onClick={handleSpotRouter}
             key={spot.id}
             price={spot.price}
             city={spot.city}
