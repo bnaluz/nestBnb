@@ -44,6 +44,11 @@ function ProfileButton({ user }) {
     closeMenu();
   };
 
+  const manageSpotHandler = (e) => {
+    e.preventDefault();
+    navigate('spots/user-spots');
+  };
+
   const ulClassName = 'profile-dropdown' + (showMenu ? '' : ' hidden');
 
   return (
@@ -57,10 +62,11 @@ function ProfileButton({ user }) {
           {user ? (
             <>
               <li>Hello, {user.username}</li>
-              <li>
-                {user.firstName} {user.lastName}
-              </li>
+
               <li>{user.email}</li>
+              <li>
+                <button onClick={manageSpotHandler}>Manage Spots</button>
+              </li>
               <li>
                 <button onClick={logout}>Log Out</button>
               </li>

@@ -1,0 +1,32 @@
+.delete-modal {
+  border: 1px solid #ccc;
+  padding: 20px;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #f8f8f8;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.delete-button {
+  background-color: red;
+  height: 80px;
+  width: 150px;
+  margin-left: 10px;
+}
+
+.close-button {
+  background-color: gray;
+  height: 80px;
+  width: 150px;
+  margin-left: 10px;
+}
+
+.delete-header {
+  font-size: 25px;
+  width: 100%;
+  margin: auto;
+  text-align: center;
+}
