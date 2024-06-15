@@ -2,9 +2,10 @@
   padding-top: 120px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 15px;
+  grid-gap: 10px;
   max-width: 1640px;
   margin: auto;
+  padding-bottom: 50px;
 }
 
 @media (max-width: 1200px) {
@@ -45,5 +46,5 @@
 
 .tooltip {
   position: relative;
-  display: inline-block;
+  display: block;
 }

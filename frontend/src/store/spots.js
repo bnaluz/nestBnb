@@ -5,6 +5,8 @@ const LOAD = 'spots/LOAD';
 const GET_DETAIL = 'spots/GET_DETAIL';
 const ADD_SPOT = 'spots/ADD_SPOT';
 const ADD_SPOT_IMAGES = 'spots/ADD_SPOT_IMAGES';
+const GET_USER_SPOTS = 'spots/GET_USER_SPOTS';
+const DELETE_SPOT = 'spots/DELETE_SPOT';
 
 //*ACTIONS
 const loadSpots = (spots) => {
@@ -33,6 +35,18 @@ const addSpotImages = (spotId, images) => {
     type: ADD_SPOT_IMAGES,
     spotId,
     images,
+  };
+};
+
+const getUserSpots = (spots) => ({
+  type: GET_USER_SPOTS,
+  spots,
+});
+
+const deleteSpotAction = (spotId) => {
+  return {
+    type: DELETE_SPOT,
+    spotId,
   };
 };
 
@@ -89,9 +103,25 @@ export const createSpotImages =
     }
   };
 
+export const fetchUserSpots = () => async (dispatch) => {
+  const response = await csrfFetch('/api/spots/current');
+  const spots = await response.json();
+  dispatch(getUserSpots(spots));
+};
+
+export const deleteSpot = (spotId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: 'DELETE',
+  });
+
+  if (response.ok) {
+    dispatch(deleteSpotAction(spotId));
+  }
+};
+
 //*INITIAL STATE && REDUCER
 
-const initialState = { allSpots: {}, currentSpot: {} };
+const initialState = { allSpots: {}, currentSpot: {}, userSpots: {} };
 
 const spotsReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -135,6 +165,26 @@ const spotsReducer = (state = initialState, action) => {
         };
       }
       return state;
+    }
+    case GET_USER_SPOTS: {
+      const userSpots = {};
+      action.spots.forEach((spot) => {
+        userSpots[spot.id] = spot;
+      });
+      return {
+        ...state,
+        userSpots,
+      };
+    }
+    case DELETE_SPOT: {
+      const newState = {
+        ...state,
+        allSpots: { ...state.allSpots },
+        userSpots: { ...state.userSpots },
+      };
+      delete newState.allSpots[action.spotId];
+      delete newState.userSpots[action.spotId];
+      return newState;
     }
 
     default:
