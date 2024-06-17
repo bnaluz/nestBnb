@@ -1,3 +1,4 @@
+import { FaStar } from 'react-icons/fa6';
 import './SpotCard.css';
 
 const SpotCard = ({ avgRating, city, previewImage, price, state, name }) => {
@@ -12,11 +13,17 @@ const SpotCard = ({ avgRating, city, previewImage, price, state, name }) => {
           {city}, {state}
         </p>
         <p className="spot-rating">
-          {avgRating === null || avgRating === undefined
-            ? 'NEW'
-            : Number.isInteger(avgRating)
-            ? avgRating
-            : avgRating.toFixed(2)}
+          {avgRating === null || avgRating === undefined ? (
+            'NEW'
+          ) : Number.isInteger(avgRating) ? (
+            <div>
+              {avgRating} <FaStar />
+            </div>
+          ) : (
+            <div>
+              {avgRating.toFixed(2)} <FaStar />
+            </div>
+          )}
         </p>
         <p className="spot-price">$ {price}/night</p>
       </div>
