@@ -499,6 +499,7 @@ router.get('/:spotId/reviews', async (req, res, next) => {
           attributes: ['id', 'url'],
         },
       ],
+      order: [['createdAt', 'DESC']],
     });
 
     const formattedReviews = spotReviews.map((review) => ({
