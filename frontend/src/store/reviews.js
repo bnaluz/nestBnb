@@ -5,6 +5,7 @@ import { getSpotDetail } from './spots';
 const GET_SPOT_REVIEWS = 'reviews/GET';
 const GET_USER_REVIEWS = 'reviews/GET_USERS';
 const ADD_REVIEW = 'reviews/ADD';
+const DELETE_REVIEW = 'reviews/DELETE';
 
 //*ACTIONS
 const getSpotReviews = (reviews) => {
@@ -25,6 +26,13 @@ const addNewReview = (newReview) => {
   return {
     type: ADD_REVIEW,
     newReview,
+  };
+};
+
+const deleteReviewAction = (reviewId) => {
+  return {
+    type: DELETE_REVIEW,
+    reviewId,
   };
 };
 
@@ -59,6 +67,15 @@ export const postSpotReview = (payload) => async (dispatch) => {
   return newReview;
 };
 
+export const deleteReview = (reviewId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/reviews/${reviewId}`, {
+    method: 'DELETE',
+  });
+  if (response.ok) {
+    dispatch(deleteReviewAction(reviewId));
+  }
+};
+
 const initialState = { reviews: {}, currentUserReviews: {} };
 
 const reviewsReducer = (state = initialState, action) => {
@@ -91,6 +108,16 @@ const reviewsReducer = (state = initialState, action) => {
           [newReview.id]: newReview,
         },
       };
+    }
+    case DELETE_REVIEW: {
+      const newState = {
+        ...state,
+        reviews: { ...state.reviews },
+        currentUserReviews: { ...state.currentUserReviews },
+      };
+      delete newState.reviews[action.reviewId];
+      delete newState.currentUserReviews[action.reviewId];
+      return newState;
     }
     default:
       return state;
