@@ -21,7 +21,12 @@ const SpotPageCalloutBox = () => {
               <FaStar size={15} />
               {spot.avgRating === null ? 'NEW' : `${spot.avgRating.toFixed(2)}`}
             </div>
-            <div>{`${spot.numReviews}`} reviews</div>
+            {spot.avgRating !== null && spot.numReviews > 0 && <div>{`·`}</div>}
+            {spot.numReviews > 0 && (
+              <div>
+                {spot.numReviews} {spot.numReviews === 1 ? 'review' : 'reviews'}
+              </div>
+            )}
           </div>
         </div>
       </div>
