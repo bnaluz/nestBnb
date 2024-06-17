@@ -7,6 +7,7 @@ const ADD_SPOT = 'spots/ADD_SPOT';
 const ADD_SPOT_IMAGES = 'spots/ADD_SPOT_IMAGES';
 const GET_USER_SPOTS = 'spots/GET_USER_SPOTS';
 const DELETE_SPOT = 'spots/DELETE_SPOT';
+const UPDATE_SPOT = 'spots/UPDATE';
 
 //*ACTIONS
 const loadSpots = (spots) => {
@@ -47,6 +48,13 @@ const deleteSpotAction = (spotId) => {
   return {
     type: DELETE_SPOT,
     spotId,
+  };
+};
+
+const updateSpotAction = (payload) => {
+  return {
+    type: UPDATE_SPOT,
+    payload,
   };
 };
 
@@ -119,6 +127,19 @@ export const deleteSpot = (spotId) => async (dispatch) => {
   }
 };
 
+export const updateSpot = (spotId, payload) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  const updatedSpot = await response.json();
+  dispatch(updateSpotAction(payload));
+  return updatedSpot;
+};
+
 //*INITIAL STATE && REDUCER
 
 const initialState = { allSpots: {}, currentSpot: {}, userSpots: {} };
@@ -185,6 +206,21 @@ const spotsReducer = (state = initialState, action) => {
       delete newState.allSpots[action.spotId];
       delete newState.userSpots[action.spotId];
       return newState;
+    }
+    case UPDATE_SPOT: {
+      const updatedSpot = action.payload;
+      return {
+        ...state,
+        allSpots: {
+          ...state.allSpots,
+          [updatedSpot.id]: updatedSpot,
+        },
+        userSpots: {
+          ...state.userSpots,
+          [updatedSpot.id]: updatedSpot,
+        },
+        currentSpot: updatedSpot,
+      };
     }
 
     default:
