@@ -12,7 +12,7 @@ const SpotCard = ({ avgRating, city, previewImage, price, state, name }) => {
           {city}, {state}
         </p>
         <p className="spot-rating">
-          {avgRating === null
+          {avgRating === null || avgRating === undefined
             ? 'NEW'
             : Number.isInteger(avgRating)
             ? avgRating

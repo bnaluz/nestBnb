@@ -11,6 +11,7 @@ import SpotDetailPage from './pages/SpotDetailPage/SpotDetailPage';
 import { Modal } from './context/Modal';
 import CreateSpotPage from './pages/CreateSpotFormPage/CreateSpotPage';
 import ManageSpotsPage from './pages/ManageSpotsPage/ManageSpotsPage';
+import UpdateSpotFormPage from './pages/UpdateSpotFormPage/UpdateSpotFormPage';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
               { path: ':spotId', element: <SpotDetailPage /> },
               { path: 'create', element: <CreateSpotPage /> },
               { path: 'user-spots', element: <ManageSpotsPage /> },
+              { path: 'update', element: <UpdateSpotFormPage /> },
             ],
           },
         ],
