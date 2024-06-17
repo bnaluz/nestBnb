@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { getCurrentUserReviews } from '../../store/reviews';
 import OpenModalButton from '../OpenModalButton/OpenModalButton';
 import PostReviewModal from '../PostReviewModal/PostReviewModal';
+import DeleteReviewModal from '../DeleteReviewModal/DeleteReviewModal';
 
 const ReviewsBox = ({ reviewCount, avgRating, reviews }) => {
   const dispatch = useDispatch();
@@ -64,6 +65,13 @@ const ReviewsBox = ({ reviewCount, avgRating, reviews }) => {
                 <div>{review.User.firstName.toUpperCase()}</div>
                 <div>{review.createdAt.slice(0, 7)}</div>
                 <div>{review.review}</div>
+                {sessionUser && sessionUser.id === review.userId && (
+                  <OpenModalButton
+                    buttonText={'Delete'}
+                    onButtonClick={() => console.log('Delete review')}
+                    modalComponent={<DeleteReviewModal reviewId={review.id} />}
+                  />
+                )}
               </div>
             ))}
           </div>
