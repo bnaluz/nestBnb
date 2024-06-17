@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserSpots } from '../../store/spots';
+import { fetchUserSpots, getSpotDetail } from '../../store/spots';
 import SpotCard from '../../components/SpotCard/SpotCard';
 import OpenModalButton from '../../components/OpenModalButton/OpenModalButton';
 import DeleteSpotModal from '../../components/DeleteSpotModal/DeleteSpotModal';
@@ -21,15 +21,15 @@ const ManageSpotsPage = () => {
     navigate(`/spots/${spotId}`);
   };
 
-  const handleDelete = (e, spotId) => {
+  const handleDelete = (e) => {
     e.stopPropagation();
-    console.log('clickedDelete');
-    console.log(spotId);
   };
 
-  const handleUpdate = (e, spotId) => {
+  const handleUpdate = async (e, spotId) => {
     e.stopPropagation();
-    console.log(spotId);
+    e.preventDefault();
+    await dispatch(getSpotDetail(spotId));
+    navigate('/spots/update');
   };
 
   useEffect(() => {
@@ -65,7 +65,10 @@ const ManageSpotsPage = () => {
               name={spot.name}
             />
             <div className="spot-card-actions">
-              <button className="update-button" onClick={handleUpdate}>
+              <button
+                className="update-button"
+                onClick={(e) => handleUpdate(e, spot.id)}
+              >
                 Update
               </button>
               <OpenModalButton
