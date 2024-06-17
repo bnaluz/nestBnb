@@ -38,11 +38,12 @@ const SpotDetailPage = () => {
           <img src={spot.previewImage} alt="" />
         </div>
 
-        {spot.SpotImages.slice(0, 4).map((image) => (
-          <div key={image.id} className="image small">
-            <img src={image.url} alt="" />
-          </div>
-        ))}
+        {spot.SpotImages &&
+          spot.SpotImages.slice(0, 4).map((image) => (
+            <div key={image.id} className="image small">
+              <img src={image.url} alt="" />
+            </div>
+          ))}
       </div>
 
       <div className="info-box">
